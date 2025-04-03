@@ -18,8 +18,7 @@ public class User implements UserDetails {
     private String email;
     private String password;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<PasswordEntry> passwordEntries;
+
 
     public User(String username, String email, String password) {
         this.username = username;
@@ -76,11 +75,5 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public List<PasswordEntry> getPasswordEntries() {
-        return passwordEntries;
-    }
 
-    public void setPasswordEntries(List<PasswordEntry> passwordEntries) {
-        this.passwordEntries = passwordEntries;
-    }
 }

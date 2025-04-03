@@ -72,4 +72,20 @@ public class AuthServiceImpl implements AuthService{
         userRepository.save(user);
         return jwtService.generateToken(user);
     }
+
+    @Override
+    public boolean checkUser(Long id){
+        Optional<User> user = userRepository.findById(id);
+        return user.isPresent();
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if(user.isPresent()){
+            return user.get();
+        } else {
+            throw new RuntimeException("User not found");
+        }
+    }
 }
