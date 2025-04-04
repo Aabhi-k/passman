@@ -1,6 +1,6 @@
 package com.aabhi.pasman.security.encryption;
 
-import com.aabhi.pasman.dto.password.PasswordDto;
+import com.aabhi.pasman.dto.password.InsertPasswordDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -66,22 +66,22 @@ public class EncryptionUtil {
 
 
 
-    public PasswordDto encryptPassword(PasswordDto passwordDto) throws Exception {
+    public InsertPasswordDto encryptPassword(InsertPasswordDto passwordDto) throws Exception {
         String encryptedPassword = encrypt(passwordDto.getPassword());
 
         String encryptedUsername = encrypt(passwordDto.getUsername());
         String encryptedUrl = encrypt(passwordDto.getUrl());
         String encryptedDescription = encrypt(passwordDto.getDescription());
 
-        return new PasswordDto(encryptedUsername, encryptedPassword, encryptedUrl, encryptedDescription, passwordDto.getUserId());
+        return new InsertPasswordDto(encryptedUsername, encryptedPassword, encryptedUrl, encryptedDescription, passwordDto.getUserId());
     }
 
-    public PasswordDto decryptPassword(PasswordDto passwordDto) throws Exception {
+    public InsertPasswordDto decryptPassword(InsertPasswordDto passwordDto) throws Exception {
         String decryptedPassword = decrypt(passwordDto.getPassword());
         String decryptedUsername = decrypt(passwordDto.getUsername());
         String decryptedUrl = decrypt(passwordDto.getUrl());
         String decryptedDescription = decrypt(passwordDto.getDescription());
-        return new PasswordDto(decryptedUsername, decryptedPassword, decryptedUrl, decryptedDescription, passwordDto.getUserId());
+        return new InsertPasswordDto(decryptedUsername, decryptedPassword, decryptedUrl, decryptedDescription, passwordDto.getUserId());
     }
 
 

@@ -1,6 +1,6 @@
 package com.aabhi.pasman.controller;
 
-import com.aabhi.pasman.dto.password.PasswordDto;
+import com.aabhi.pasman.dto.password.InsertPasswordDto;
 import com.aabhi.pasman.service.passwordservice.PasswordService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,19 +16,20 @@ public class PasswordController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addPassword(@RequestBody PasswordDto passwordDto) throws Exception {
+    public ResponseEntity<String> addPassword(@RequestBody InsertPasswordDto passwordDto) throws Exception {
         // Logic to add a password
         return ResponseEntity.ok(passwordService.insertPassword(passwordDto));
     }
 
-    @PostMapping("/get")
-    public ResponseEntity<PasswordDto> getPassword(@RequestBody Long passwordId) {
+    @GetMapping("/get/{id}")
+    public ResponseEntity<InsertPasswordDto> getPassword(@PathVariable String id) throws Exception {
         // Logic to get a password
+        Long passwordId = Long.parseLong(id);
         return ResponseEntity.ok(passwordService.getPassword(passwordId));
     }
 
     @PostMapping("/update")
-    public ResponseEntity<String> updatePassword(@RequestBody PasswordDto passwordDto) {
+    public ResponseEntity<String> updatePassword(@RequestBody InsertPasswordDto passwordDto) {
         // Logic to update a password
         return ResponseEntity.ok(passwordService.updatePassword());
     }
@@ -43,13 +44,6 @@ public class PasswordController {
     public ResponseEntity<String> getAllPasswords() {
         // Logic to get all passwords
         return ResponseEntity.ok(passwordService.getAllPasswords());
-    }
-
-    @PostMapping("/get/{id}")
-    public ResponseEntity<String> getPasswordById(@PathVariable String id) {
-        // Logic to get a password by ID
-        Long passwordId = Long.parseLong(id);
-        return ResponseEntity.ok(passwordService.getPasswordById());
     }
 
 }

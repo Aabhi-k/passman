@@ -1,6 +1,7 @@
 package com.aabhi.pasman.service.passwordservice;
 
-import com.aabhi.pasman.dto.password.PasswordDto;
+import com.aabhi.pasman.dto.password.InsertPasswordDto;
+import com.aabhi.pasman.dto.password.ReturnPasswordDto;
 import com.aabhi.pasman.model.Password;
 import com.aabhi.pasman.repository.PasswordRepository;
 import com.aabhi.pasman.security.encryption.EncryptionUtil;
@@ -24,7 +25,7 @@ public class PasswordServiceImpl implements PasswordService {
 
 
     @Override
-    public String insertPassword(PasswordDto passwordDto) throws Exception {
+    public String insertPassword(InsertPasswordDto passwordDto) throws Exception {
         Long userId = passwordDto.getUserId();
         if (userId == null) {
             throw new IllegalStateException("User not authenticated");
@@ -32,7 +33,7 @@ public class PasswordServiceImpl implements PasswordService {
             throw new IllegalStateException("User not found");
         }
 
-        PasswordDto encryptedPasswordDto = encryptionUtil.encryptPassword(passwordDto);
+        InsertPasswordDto encryptedPasswordDto = encryptionUtil.encryptPassword(passwordDto);
         Password password = toPassword(encryptedPasswordDto);
         password.setUser(authService.getUserById(userId));
         password.setCreatedAt(new Date());
@@ -47,8 +48,12 @@ public class PasswordServiceImpl implements PasswordService {
 
 
     @Override
-    public PasswordDto getPassword(Long passwordId) {
-        return null;
+    public ReturnPasswordDto getPassword(Long passwordId) throws Exception {
+        Password encryptedPassword = passwordRepository.findById(passwordId)
+                .orElseThrow(() -> new IllegalStateException("Password not found"));
+
+        // Decrypt the password
+        return encryptionUtil.decryptPassword(toInsertPasswordDto(encryptedPassword));
     }
 
     @Override
@@ -72,8 +77,8 @@ public class PasswordServiceImpl implements PasswordService {
     }
 
     // Mappers
-    public PasswordDto toInsertPasswordDto(Password password) {
-        return new PasswordDto(
+    public InsertPasswordDto toInsertPasswordDto(Password password) {
+        return new InsertPasswordDto(
                 password.getUsername(),
                 password.getPassword(),
                 password.getUrl(),
@@ -81,7 +86,7 @@ public class PasswordServiceImpl implements PasswordService {
                 password.getUser().getId()
         );
     }
-    public Password toPassword(PasswordDto passwordDto) {
+    public Password toPassword(InsertPasswordDto passwordDto) {
         return new Password(
                 passwordDto.getUsername(),
                 passwordDto.getPassword(),

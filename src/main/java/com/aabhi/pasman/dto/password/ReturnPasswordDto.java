@@ -1,20 +1,19 @@
 package com.aabhi.pasman.dto.password;
 
-public class PasswordDto {
+public class ReturnPasswordDto {
     private String username;
     private String password;
     private String url;
     private String description;
-    private Long userId;
 
-    public PasswordDto() {}
+    public ReturnPasswordDto() {
+    }
 
-    public PasswordDto(String username, String password, String url, String description, Long userId) {
+    public ReturnPasswordDto(String username, String password, String url, String description) {
         this.username = username;
         this.password = password;
         this.url = url;
         this.description = description;
-        this.userId = userId;
     }
 
     public String getUsername() {
@@ -31,9 +30,5 @@ public class PasswordDto {
 
     public String getDescription() {
         return description;
-    }
-
-    public Long getUserId() {
-        return userId;
     }
 }

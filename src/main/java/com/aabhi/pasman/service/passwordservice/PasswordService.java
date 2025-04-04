@@ -1,10 +1,11 @@
 package com.aabhi.pasman.service.passwordservice;
 
-import com.aabhi.pasman.dto.password.PasswordDto;
+import com.aabhi.pasman.dto.password.InsertPasswordDto;
+import com.aabhi.pasman.dto.password.ReturnPasswordDto;
 
 public interface PasswordService {
-    String insertPassword(PasswordDto passwordDto) throws Exception;
-    PasswordDto getPassword(Long passwordId);
+    String insertPassword(InsertPasswordDto passwordDto) throws Exception;
+    ReturnPasswordDto getPassword(Long passwordId) throws Exception;
     String updatePassword();
     String deletePassword();
     String getAllPasswords();
