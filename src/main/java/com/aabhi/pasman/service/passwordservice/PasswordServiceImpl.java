@@ -1,11 +1,10 @@
 package com.aabhi.pasman.service.passwordservice;
 
-import com.aabhi.pasman.dto.password.InsertPasswordDto;
-import com.aabhi.pasman.dto.password.ReturnPasswordDto;
+import com.aabhi.pasman.dto.password.PasswordDto;
 import com.aabhi.pasman.model.Password;
 import com.aabhi.pasman.repository.PasswordRepository;
-import com.aabhi.pasman.security.encryption.EncryptionUtil;
 import com.aabhi.pasman.service.authservice.AuthService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -13,47 +12,35 @@ import java.util.Date;
 @Service
 public class PasswordServiceImpl implements PasswordService {
     private final PasswordRepository passwordRepository;
-    private final EncryptionUtil encryptionUtil;
     private final AuthService authService;
 
 
-    public PasswordServiceImpl(PasswordRepository passwordRepository, EncryptionUtil encryptionUtil, AuthService authService) {
+    @Autowired
+    public PasswordServiceImpl(PasswordRepository passwordRepository, AuthService authService) {
         this.passwordRepository = passwordRepository;
-        this.encryptionUtil = encryptionUtil;
         this.authService = authService;
     }
 
 
     @Override
-    public String insertPassword(InsertPasswordDto passwordDto) throws Exception {
-        Long userId = passwordDto.getUserId();
-        if (userId == null) {
-            throw new IllegalStateException("User not authenticated");
-        } else if (!authService.checkUser(userId)) {
-            throw new IllegalStateException("User not found");
-        }
+    public void insertPassword(PasswordDto passwordDto) throws Exception {
+       String userId = passwordDto.getUserId();
+       if (userId == null) {
+           throw new Exception("User ID is null");
+       } else if (!authService.checkUser(userId)) {
+           throw new Exception("User not found");
+       }
+       Password password = toPassword(passwordDto);
 
-        InsertPasswordDto encryptedPasswordDto = encryptionUtil.encryptPassword(passwordDto);
-        Password password = toPassword(encryptedPasswordDto);
-        password.setUser(authService.getUserById(userId));
-        password.setCreatedAt(new Date());
-        password.setUpdatedAt(new Date());
-
-        // Save the password to the database
         passwordRepository.save(password);
-        // Return the ID of the saved password
-        return password.getId().toString();
+
     }
 
 
 
     @Override
-    public ReturnPasswordDto getPassword(Long passwordId) throws Exception {
-        Password encryptedPassword = passwordRepository.findById(passwordId)
-                .orElseThrow(() -> new IllegalStateException("Password not found"));
-
-        // Decrypt the password
-        return encryptionUtil.decryptPassword(toInsertPasswordDto(encryptedPassword));
+    public PasswordDto getPassword(String passwordId) throws Exception {
+        return null;
     }
 
     @Override
@@ -77,22 +64,26 @@ public class PasswordServiceImpl implements PasswordService {
     }
 
     // Mappers
-    public InsertPasswordDto toInsertPasswordDto(Password password) {
-        return new InsertPasswordDto(
-                password.getUsername(),
-                password.getPassword(),
-                password.getUrl(),
-                password.getDescription(),
-                password.getUser().getId()
-        );
+    public PasswordDto toPasswordDto(Password password) {
+        return PasswordDto.builder()
+                .id(password.getId())
+                .encryptedData(password.getEncryptedData())
+                .iv(password.getIv())
+                .authTag(password.getAuthTag())
+                .userId(password.getUser().getId())
+                .createdAt(password.getCreatedAt())
+                .updatedAt(password.getUpdatedAt())
+                .build();
     }
-    public Password toPassword(InsertPasswordDto passwordDto) {
-        return new Password(
-                passwordDto.getUsername(),
-                passwordDto.getPassword(),
-                passwordDto.getUrl(),
-                passwordDto.getDescription()
-        );
+    public Password toPassword(PasswordDto passwordDto) {
+        return Password.builder()
+                .encryptedData(passwordDto.getEncryptedData())
+                .iv(passwordDto.getIv())
+                .authTag(passwordDto.getAuthTag())
+                .user(authService.getUserById(passwordDto.getUserId()))
+                .createdAt(new Date().getTime())
+                .updatedAt(new Date().getTime())
+                .build();
     }
 
 }

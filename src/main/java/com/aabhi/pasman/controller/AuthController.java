@@ -1,6 +1,7 @@
 package com.aabhi.pasman.controller;
 
 import com.aabhi.pasman.dto.user.LoginDto;
+import com.aabhi.pasman.dto.user.LoginResponse;
 import com.aabhi.pasman.dto.user.UserDto;
 import com.aabhi.pasman.service.authservice.AuthServiceImpl;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +18,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDto loginDto){
-        String token = authService.login(loginDto);
-        if (token.equals("null")) {
-            System.out.println("Invalid credential");
-            return ResponseEntity.badRequest().body("Invalid credentials");
-        }
-        else {
-            return ResponseEntity.ok(token);
-        }
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginDto loginDto){
+        LoginResponse response = authService.login(loginDto);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/register")
