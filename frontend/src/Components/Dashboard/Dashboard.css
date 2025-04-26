@@ -1,0 +1,418 @@
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eaeaea;
+    margin-bottom: 30px;
+  }
+  
+  .dashboard-header h1 {
+    margin: 0;
+    color: #333;
+  }
+  
+  .dashboard-actions {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .add-password-btn {
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s;
+  }
+  
+  .add-password-btn:hover {
+    background-color: #3367d6;
+  }
+  
+  .add-password-btn:before {
+    content: "+";
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .user-menu-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #555;
+  }
+  
+  .dashboard-content {
+    min-height: 400px;
+  }
+  
+  .loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: #666;
+  }
+  
+  .error-message {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 15px;
+    border-radius: 4px;
+    text-align: center;
+    margin: 30px 0;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 60px 0;
+    color: #666;
+  }
+  
+  .add-password-btn-large {
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.2s;
+  }
+  
+  .add-password-btn-large:hover {
+    background-color: #3367d6;
+  }
+ /* Add to Dashboard.css or replace existing password grid styles */
+
+.password-list-container {
+  margin-top: 20px;
+}
+
+.password-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.password-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: white;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.password-list-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.password-item-error {
+  border-left: 4px solid #e53935;
+  background-color: #ffebee;
+}
+
+.password-item-content {
+  flex: 1;
+}
+
+.password-title {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.password-username {
+  font-size: 0.85rem;
+  color: #757575;
+}
+
+.password-item-actions {
+  display: flex;
+}
+
+.copy-password-btn {
+  background-color: #f1f3f4;
+  border: none;
+  color: #444;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.2s;
+}
+
+.copy-password-btn:hover {
+  background-color: #e8eaed;
+}
+
+@media (max-width: 576px) {
+  .password-list-item {
+    padding: 12px;
+  }
+  
+  .password-title {
+    font-size: 0.95rem;
+  }
+  
+  .password-username {
+    font-size: 0.8rem;
+  }
+}
+  
+  @media (max-width: 768px) {
+    .dashboard-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+    
+    .dashboard-actions {
+      width: 100%;
+      justify-content: space-between;
+    }
+    
+    .passwords-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Add this to your Dashboard.css file */
+
+/* Modal styles */
+.password-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.password-modal {
+  background-color: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: #999;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+}
+
+.modal-close-btn:hover {
+  color: #333;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-field {
+  margin-bottom: 16px;
+}
+
+.modal-field label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.field-value {
+  font-size: 1rem;
+  color: #333;
+  word-break: break-word;
+}
+
+.field-with-copy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.field-value a {
+  color: #4285f4;
+  text-decoration: none;
+}
+
+.field-value a:hover {
+  text-decoration: underline;
+}
+
+.copy-btn, .show-btn {
+  background-color: #f1f3f4;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: #444;
+  white-space: nowrap;
+}
+
+.copy-btn:hover, .show-btn:hover {
+  background-color: #e8eaed;
+}
+
+.description {
+  white-space: pre-wrap;
+}
+
+.metadata {
+  color: #757575;
+  font-size: 0.85rem;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 15px 20px;
+  border-top: 1px solid #eee;
+}
+
+.edit-btn, .delete-btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.edit-btn {
+  background-color: #f1f3f4;
+  border: 1px solid #dadce0;
+  color: #444;
+}
+
+.delete-btn {
+  background-color: #fff0f0;
+  border: 1px solid #ffcdd2;
+  color: #d32f2f;
+}
+
+.edit-btn:hover {
+  background-color: #e8eaed;
+}
+
+.delete-btn:hover {
+  background-color: #ffebee;
+}
+
+.password-dots {
+  letter-spacing: 2px;
+  font-family: monospace;
+}
+/* Add these to your Dashboard.css */
+.edit-input, .edit-textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  margin-top: 4px;
+}
+
+.edit-input:focus, .edit-textarea:focus {
+  border-color: #4285f4;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+}
+
+.edit-textarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+.save-btn {
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background-color: #3367d6;
+}
+
+.cancel-btn {
+  background-color: #f1f3f4;
+  border: 1px solid #dadce0;
+  color: #444;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.cancel-btn:hover {
+  background-color: #e8eaed;
+}
