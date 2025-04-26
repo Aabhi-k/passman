@@ -18,6 +18,10 @@ const InsertPassword = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
+  // Add states for password generator
+  const [showPasswordGenerator, setShowPasswordGenerator] = useState(false);
+  const [passwordLength, setPasswordLength] = useState(12);
+  
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -28,25 +32,25 @@ const InsertPassword = () => {
     }));
   };
 
-  const handleGeneratePassword = () => {
-    // Generate a strong random password
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=<>?';
-    let password = '';
-    for (let i = 0; i < 16; i++) {
-      password += chars.charAt(Math.floor(Math.random() * chars.length));
+  const generatePassword = (length) => {
+    const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[]{}|;:,.<>?";
+    let password = "";
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * charset.length);
+      password += charset[randomIndex];
     }
-    
-    setFormData(prevData => ({
-      ...prevData,
-      password
-    }));
+    return password;
+  };
+
+  const handleGeneratePassword = () => {
+    setShowPasswordGenerator(!showPasswordGenerator);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.title || !formData.username || !formData.password) {
-      setError('Fields is required');
+    if (!formData.title || !formData.password) {
+      setError('Title and password fields are required');
       return;
     }
 
@@ -64,7 +68,6 @@ const InsertPassword = () => {
       const response = await savePassword(ed);
 
       if (response.status !== 200) {
-
         throw new Error('Failed to save password. Please try again.');
       }
       navigate('/dashboard');
@@ -118,8 +121,8 @@ const InsertPassword = () => {
         </div>
         
         <div className="form-group password-input-group">
-          <label htmlFor="password">Password</label>
-          <div className="password-field">
+          <label htmlFor="password">Password <span className="required">*</span></label>
+          <div className="password-input-group">
             <input
               type={showPassword ? "text" : "password"}
               id="password"
@@ -127,6 +130,8 @@ const InsertPassword = () => {
               value={formData.password}
               onChange={handleChange}
               placeholder="Enter password"
+              required
+              className="password-field-input"
             />
             <button 
               type="button" 
@@ -140,9 +145,35 @@ const InsertPassword = () => {
               className="generate-password-btn"
               onClick={handleGeneratePassword}
             >
-              Generate
+              {showPasswordGenerator ? "Hide" : "Generate"}
             </button>
           </div>
+          
+          {showPasswordGenerator && (
+            <div className="password-generator">
+              <div className="length-slider">
+                <span>Length: {passwordLength}</span>
+                <input 
+                  type="range" 
+                  min="8" 
+                  max="32" 
+                  value={passwordLength} 
+                  onChange={(e) => setPasswordLength(parseInt(e.target.value))} 
+                  className="slider"
+                />
+              </div>
+              <button 
+                type="button"
+                className="generate-btn"
+                onClick={() => {
+                  const newPassword = generatePassword(passwordLength);
+                  setFormData({...formData, password: newPassword});
+                }}
+              >
+                Generate New Password
+              </button>
+            </div>
+          )}
         </div>
         
         <div className="form-group">

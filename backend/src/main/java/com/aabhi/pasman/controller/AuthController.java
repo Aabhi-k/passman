@@ -34,12 +34,4 @@ public class AuthController {
         }
     }
 
-//    @PostMapping("/change-password")
-//    public ResponseEntity<String> changePassword(@RequestBody UserDto userDto){
-//        authService.changePassword(userDto);
-//        return ResponseEntity.ok("Password changed");
-//    }
-
-
-
 }

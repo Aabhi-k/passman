@@ -27,6 +27,15 @@ const Dashboard = () => {
     description: '',
   });
 
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const [showPasswordGenerator, setShowPasswordGenerator] = useState(false);
+  const [passwordLength, setPasswordLength] = useState(12);
+
+
+
+
+
   useEffect(() => {
     let toastTimer;
     if(showSuccessToast){
@@ -89,11 +98,28 @@ const Dashboard = () => {
     navigate('/insert-password');
   };
 
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);  
+  };
+
+  const filteredPasswords = () => {
+    if(!searchTerm.trim()){
+      return passwords;
+    }
+    const term = searchTerm.toLowerCase().trim();
+    return passwords.filter(password =>
+      password.title.toLowerCase().includes(term) ||
+      (password.username && password.username.toLowerCase().includes(term)) ||
+      (password.url && password.url.toLowerCase().includes(term)) ||
+      (password.description && password.description.toLowerCase().includes(term))
+    );
+  };
+
+
+
   const handlePasswordClick = (password) => {
     setSelectedPassword(password);
     setView(true);
-
-    // navigate(`/password/${passwordId}`);
   };
   const CloseModel = () =>{
     setView(false)
@@ -103,6 +129,15 @@ const Dashboard = () => {
     setRefreshPasswords(true);
 
   }
+  const generatePassword = (length) => {
+    const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[]{}|;:,.<>?";
+    let password = "";
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * charset.length);
+      password += charset[randomIndex];
+    }
+    return password;
+  };
 
   const EditPassword = () => {
     setEditFormData({
@@ -128,20 +163,28 @@ const Dashboard = () => {
     const key = await getAESKey();
     const encryptedD = await encryptData(editFormData, key);
     const passwordDto = {...encryptedD, userId:localStorage.getItem('userId'), id: selectedPassword.id}
-
+  
     try{
       const response = await updatePassword(passwordDto);
-
-      if(response === 200){
+      if(response.status === 200){
+        setSelectedPassword({
+          ...selectedPassword,
+          ...editFormData
+        });
+        
         setSuccess("Password Updated successfully!");
         setShowSuccessToast(true);
         setIsEditing(false);
+        
+        const updatedPasswords = passwords.map(password => 
+          password.id === selectedPassword.id ? {...password, ...editFormData} : password
+        );
+        setPasswords(updatedPasswords);
       }
     }
     catch(e){
       console.log("error: ", e);
     }
-   
   }
 
   const handleCancelEdit = () =>{
@@ -167,6 +210,7 @@ const Dashboard = () => {
       <header className="dashboard-header">
         <h1>Password Manager</h1>
         <div className="dashboard-actions">
+          
           <button 
             className="add-password-btn"
             onClick={handleAddPassword}
@@ -178,6 +222,25 @@ const Dashboard = () => {
           </button>
         </div>
       </header>
+
+      <div className="search-container">
+            <input
+              type="text"
+              placeholder="Search passwords..."
+              value={searchTerm}
+              onChange={handleSearch}
+              className="search-input"
+            />
+            {searchTerm && (
+              <button 
+                className="clear-search-btn"
+                onClick={() => setSearchTerm('')}
+                title="Clear search"
+              >
+                ×
+              </button>
+            )}
+          </div>
 
       <main className="dashboard-content">
         {loading ? (
@@ -198,7 +261,7 @@ const Dashboard = () => {
         ) : (
           <div className="password-list-container">
           <ul className="password-list">
-            {passwords.map((password, index) => (
+            {filteredPasswords().map((password, index) => (
               <li 
                 key={password.id || index} 
                 className={`password-list-item ${password.error ? 'password-item-error' : ''}`}
@@ -266,14 +329,50 @@ const Dashboard = () => {
             
             <div className="modal-field">
               <label htmlFor="edit-password">Password:</label>
-              <input
-                type="text"
-                id="edit-password"
-                name="password"
-                value={editFormData.password}
-                onChange={handleEditChange}
-                className="edit-input"
-              />
+              <div className="password-input-group">
+                <input
+                  type="text"
+                  id="edit-password"
+                  name="password"
+                  value={editFormData.password}
+                  onChange={handleEditChange}
+                  className="edit-input"
+                />
+                <button 
+                  type="button"
+                  className="generate-password-btn"
+                  onClick={() => setShowPasswordGenerator(!showPasswordGenerator)}
+                  title={showPasswordGenerator ? "Hide generator" : "Generate password"}
+                >
+                  {showPasswordGenerator ? "Hide" : "Generate"}
+                </button>
+              </div>
+              
+              {showPasswordGenerator && (
+                <div className="password-generator">
+                  <div className="length-slider">
+                    <span>Length: {passwordLength}</span>
+                    <input 
+                      type="range" 
+                      min="8" 
+                      max="32" 
+                      value={passwordLength} 
+                      onChange={(e) => setPasswordLength(parseInt(e.target.value))} 
+                      className="slider"
+                    />
+                  </div>
+                  <button 
+                    type="button"
+                    className="generate-btn"
+                    onClick={() => {
+                      const newPassword = generatePassword(passwordLength);
+                      setEditFormData({...editFormData, password: newPassword});
+                    }}
+                  >
+                    Generate New Password
+                  </button>
+                </div>
+              )}
             </div>
             
             <div className="modal-field">
