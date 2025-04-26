@@ -30,8 +30,8 @@ public class Password {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private Long createdAt;
-    private Long updatedAt;
+    private Date createdAt;
+    private Date updatedAt;
 
 
 

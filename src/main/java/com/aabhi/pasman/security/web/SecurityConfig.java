@@ -2,6 +2,7 @@ package com.aabhi.pasman.security.web;
 
 import com.aabhi.pasman.security.jwt.JwtAuthenticationFilter;
 import com.aabhi.pasman.security.jwt.JwtEntryPoint;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -19,6 +20,9 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtEntryPoint authEntryPoint;
 
+    @Value("${app.origin.url}")
+    private String originURL;
+
     public SecurityConfig(AuthenticationProvider authenticationProvider, JwtAuthenticationFilter jwtAuthenticationFilter, JwtEntryPoint authEntryPoint) {
         this.authenticationProvider = authenticationProvider;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
@@ -35,6 +39,15 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider);
+        http.cors(cors -> cors.configurationSource(request -> {
+            var config = new org.springframework.web.cors.CorsConfiguration();
+            config.setAllowCredentials(true);
+            config.addAllowedOrigin(originURL);
+            config.addAllowedHeader("*");
+            config.addAllowedMethod("*");
+            return config;
+        }));
+
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

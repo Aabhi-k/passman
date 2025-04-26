@@ -7,8 +7,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LoginResponse {
+public class LoginResponseDto {
     private String token;
     private String encryptionSalt;
-
+    private String userId;
 }

@@ -1,7 +1,7 @@
 package com.aabhi.pasman.service.authservice;
 
 import com.aabhi.pasman.dto.user.LoginDto;
-import com.aabhi.pasman.dto.user.LoginResponse;
+import com.aabhi.pasman.dto.user.LoginResponseDto;
 import com.aabhi.pasman.dto.user.UserDto;
 import com.aabhi.pasman.model.User;
 import com.aabhi.pasman.repository.UserRepository;
@@ -31,7 +31,7 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public LoginResponse login(LoginDto loginDto) {
+    public LoginResponseDto login(LoginDto loginDto) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDto.getEmail(),
@@ -39,20 +39,19 @@ public class AuthServiceImpl implements AuthService{
                 )
         );
         User authenticatedUser = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
-        System.out.println(authenticatedUser);
         String token = jwtService.generateToken(authenticatedUser);
 
-        System.out.println(token);
-        return LoginResponse.builder()
+        return LoginResponseDto.builder()
                 .token(token)
                 .encryptionSalt(authenticatedUser.getEncryptionSalt())
+                .userId(authenticatedUser.getId())
                 .build();
     }
 
     @Override
-    public String register(UserDto userDto) {
+    public LoginResponseDto register(UserDto userDto) {
         if (userDto.getUsername() == null || userDto.getEmail() == null || userDto.getPassword() == null) {
-            return "null";
+            return null;
         }
 
         String username = userDto.getUsername();
@@ -64,13 +63,13 @@ public class AuthServiceImpl implements AuthService{
         // Email validation
         String emailRegex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
         if (!email.matches(emailRegex)) {
-            return "null";
+            return null;
         }
 
         // Username validation (alphanumeric)
         String usernameRegex = "^[a-zA-Z0-9]*$";
         if (!username.matches(usernameRegex)) {
-            return "null";
+            return null;
         }
 
         // Check if user already exists
@@ -91,9 +90,13 @@ public class AuthServiceImpl implements AuthService{
                 .build();
 
         userRepository.save(user);
-
+        String token = jwtService.generateToken(user);
         // ✅ Return JWT token
-        return jwtService.generateToken(user);
+        return LoginResponseDto.builder()
+                .token(token)
+                .encryptionSalt(encryptionSalt)
+                .userId(userRepository.findByEmail(email).get().getId())
+                .build();
     }
 
 
