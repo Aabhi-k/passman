@@ -4,7 +4,7 @@ import './Dashboard.css';
 import { getAllPasswords, updatePassword, deletePassword } from '../api/api';
 import { decryptData, encryptData } from '../Encryption/CryptoUtils';
 import { getAESKey } from './../Encryption/AesKeyStore';
-import passmanlogo from '../../assets/passmanlogo.png';
+import passmanlogo from '../../assets/passmanLogo.png';
 
 const Dashboard = () => {
   const [selectedPassword, setSelectedPassword] = useState(null);
