@@ -4,7 +4,7 @@ import { registerUser } from '../api/api';
 import { deriveAESKey } from '../Encryption/CryptoUtils';
 import { setAESKey } from '../Encryption/AesKeyStore';
 import { useNavigate } from 'react-router-dom';
-import passmanLogo from '../../assets/passmanlogo.png';
+import passmanLogo from '../../assets/passmanLogo.png';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
