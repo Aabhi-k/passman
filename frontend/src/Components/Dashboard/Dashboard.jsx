@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
-import { getAllPasswords, updatePassword } from '../api/api';
+import { getAllPasswords, updatePassword, deletePassword } from '../api/api';
 import { decryptData, encryptData } from '../Encryption/CryptoUtils';
 import { getAESKey } from './../Encryption/AesKeyStore';
-
+import passmanlogo from '../../assets/passmanlogo.png';
 
 const Dashboard = () => {
   const [selectedPassword, setSelectedPassword] = useState(null);
@@ -32,9 +32,8 @@ const Dashboard = () => {
   const [showPasswordGenerator, setShowPasswordGenerator] = useState(false);
   const [passwordLength, setPasswordLength] = useState(12);
 
-
-
-
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     let toastTimer;
@@ -191,11 +190,43 @@ const Dashboard = () => {
     setIsEditing(false);
   }
 
-  const handleDelete = () => {
-    console.log("deleted")
+  const handleDeleteClick = () => {
+    setShowDeleteConfirm(true);
+  };
 
-    setRefreshPasswords(true);
+  const handleCancelDelete = () => {
+    setShowDeleteConfirm(false);
+  };
+
+  const handleDelete = async () => {
+    try {
+      setIsDeleting(true);
+      const response = await deletePassword(selectedPassword.id);
+      
+      if (response.status === 200) {
+        // First close the modal
+        setView(false);
+        setSelectedPassword(null);
+        setIsEditing(false);
+        
+        // Then show success message
+        setSuccess('Password deleted successfully');
+        setShowSuccessToast(true);
+        
+        // Update the password list
+        setRefreshPasswords(true);
+      } else {
+        setError('Failed to delete password. Please try again.');
+      }
+    } catch (err) {
+      console.error('Error deleting password:', err);
+      setError('Failed to delete password. Please try again.');
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteConfirm(false);
+    }
   }
+
   return (
     <div className="dashboard-container">
       {showSuccessToast && (
@@ -208,7 +239,9 @@ const Dashboard = () => {
       )}
 
       <header className="dashboard-header">
-        <h1>Password Manager</h1>
+      <div className="logo-container">
+          <img src={passmanlogo} width={200}alt="PassMan Logo" />
+        </div>
         <div className="dashboard-actions">
           
           <button 
@@ -478,20 +511,46 @@ const Dashboard = () => {
       </div>
       
       <div className="modal-footer">
-        {isEditing ? (
-          // Edit mode footer with Save and Cancel buttons
-          <>
-            <button className="cancel-btn" onClick={handleCancelEdit}>Cancel</button>
-            <button className="save-btn" onClick={handleSave}>Save Changes</button>
-          </>
-        ) : (
-          // View mode footer with Edit and Delete buttons
-          <>
-            <button className="edit-btn" onClick={EditPassword}>Edit</button>
-            <button className="delete-btn" onClick={handleDelete}>Delete</button>
-          </>
-        )}
+  {isEditing ? (
+    <>
+      <button className="cancel-btn" onClick={handleCancelEdit}>Cancel</button>
+      <button className="save-btn" onClick={handleSave}>Save Changes</button>
+    </>
+  ) : showDeleteConfirm ? (
+    <>
+      <div className="delete-confirmation">
+        <p>Are you sure you want to delete this password?</p>
+        <div className="delete-actions">
+          <button 
+            className="cancel-btn" 
+            onClick={handleCancelDelete}
+            disabled={isDeleting}
+          >
+            Cancel
+          </button>
+          <button 
+            className="delete-btn" 
+            onClick={handleDelete}
+            disabled={isDeleting}
+          >
+            {isDeleting ? (
+              <div className="loading-spinner">
+                <div className="spinner"></div>
+                <span>Deleting...</span>
+              </div>
+            ) : 'Confirm Delete'}
+          </button>
+        </div>
       </div>
+    </>
+  ) : (
+    <>
+      <button className="edit-btn" onClick={EditPassword}>Edit</button>
+      <button className="delete-btn" onClick={handleDeleteClick}>Delete</button>
+    </>
+  )}
+</div>
+
     </div>
   </div>
 )}

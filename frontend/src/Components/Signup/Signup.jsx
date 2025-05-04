@@ -4,6 +4,7 @@ import { registerUser } from '../api/api';
 import { deriveAESKey } from '../Encryption/CryptoUtils';
 import { setAESKey } from '../Encryption/AesKeyStore';
 import { useNavigate } from 'react-router-dom';
+import passmanLogo from '../../assets/passmanlogo.png';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -108,8 +109,10 @@ const Signup = () => {
   return (
     <div className="signup-container">
       <div className="signup-form-box">
-        <h1>PassMan</h1>
-        <h2>Create your account</h2>
+      <div className="logo-container">
+          <img src={passmanLogo} alt="PassMan Logo" />
+        </div>
+        <h2 className="signup-subtitle">Create your account</h2>
         
         {error && <div className="error-message">{error}</div>}
         {success && <div className="success-message">{success}</div>}
@@ -125,6 +128,7 @@ const Signup = () => {
               onChange={handleChange}
               placeholder="Choose a username"
               required
+              className='form-input'
             />
           </div>
           
@@ -138,6 +142,7 @@ const Signup = () => {
               onChange={handleChange}
               placeholder="Enter your email"
               required
+              className='form-input'
             />
           </div>
           
@@ -151,6 +156,7 @@ const Signup = () => {
               onChange={handleChange}
               placeholder="Create a password"
               required
+              className='form-input'
             />
           </div>
           
@@ -164,6 +170,7 @@ const Signup = () => {
               onChange={handleChange}
               placeholder="Confirm your password"
               required
+              className='form-input'
             />
           </div>
           
@@ -180,7 +187,7 @@ const Signup = () => {
         </form>
         
         <div className="signup-footer">
-          <p>Already have an account? <a href="/login">Log in</a></p>
+          <p className='signup-footer-text'>Already have an account? <a href="/login" className='signup-footer-link'>Log in</a></p>
         </div>
       </div>
     </div>

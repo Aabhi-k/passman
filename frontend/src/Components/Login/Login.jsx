@@ -4,6 +4,7 @@ import { loginUser } from '../api/api';
 import { deriveAESKey } from '../Encryption/CryptoUtils';
 import { getAESKey, setAESKey } from '../Encryption/AesKeyStore';
 import { useNavigate } from 'react-router-dom';
+import passmanLogo from '../../assets/passmanLogo.png'
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
@@ -63,8 +64,10 @@ const Login = () => {
   return (
     <div className="login-container">
       <div className="login-form-box">
-        <h1>PassMan</h1>
-        <h2>Login to your account</h2>
+      <div className="logo-container">
+          <img src={passmanLogo} alt="PassMan Logo" />
+        </div>
+        <h2 className="login-subtitle">Login to your account</h2>
         
         {error && <div className="error-message">{error}</div>}
         
@@ -79,6 +82,7 @@ const Login = () => {
               onChange={handleChange}
               placeholder="Enter your email"
               required
+              className='form-input'
             />
           </div>
           
@@ -92,6 +96,7 @@ const Login = () => {
               onChange={handleChange}
               placeholder="Enter your password"
               required
+              className='form-input'
             />
           </div>
           
@@ -106,8 +111,8 @@ const Login = () => {
         </form>
         
         <div className="login-footer">
-          <p>Don't have an account? <a href="/signup">Sign up</a></p>
-          <p><a href="/forgot-password">Forgot password?</a></p>
+          <p className='login-footer-text'>Don't have an account? <a href="/signup" className='login-footer-link'>Sign up</a></p>
+          <p><a href="/forgot-password" className='login-footer-link'>Forgot password?</a></p>
         </div>
       </div>
     </div>

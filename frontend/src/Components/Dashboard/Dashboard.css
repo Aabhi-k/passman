@@ -1,11 +1,14 @@
 /* Core layout */
 .dashboard-container {
-  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f9fafb;
+  background: linear-gradient(rgba(18, 18, 20, 0.8), rgba(18, 18, 20, 0.9)), url('../../assets/dashboardBg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   min-height: 100vh;
+  color: #e0e0e0;
 }
 
 /* Enhanced header */
@@ -13,14 +16,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 20px;
-  margin-bottom: 24px;
   border-bottom: none;
+  margin-bottom: 24px;
 }
 
 .dashboard-header h1 {
   margin: 0;
-  color: #1a73e8;
+  color: #81c995;
   font-weight: 600;
   font-size: 1.8rem;
 }
@@ -33,8 +35,8 @@
 
 /* Improved add password button */
 .add-password-btn {
-  background-color: #1a73e8;
-  color: white;
+  background-color: #81c995;
+  color: #121214;
   border: none;
   padding: 10px 20px;
   border-radius: 6px;
@@ -45,12 +47,12 @@
   align-items: center;
   gap: 8px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .add-password-btn:hover {
-  background-color: #1765cc;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  background-color: #6db17f;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
   transform: translateY(-1px);
 }
 
@@ -69,7 +71,7 @@
   border: none;
   cursor: pointer;
   font-size: 1.5rem;
-  color: #555;
+  color: #e0e0e0;
   transition: color 0.2s;
   height: 40px;
   width: 40px;
@@ -80,23 +82,24 @@
 }
 
 .user-menu-btn:hover {
-  background-color: #f0f3f8;
-  color: #1a73e8;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #81c995;
 }
+
 .search-container {
   position: relative;
   margin: 0 0 24px 0;
   border-radius: 8px;
-  background-color: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  background-color: rgba(30, 30, 34, 0.8);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   transition: all 0.2s;
   overflow: hidden; 
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .search-container:focus-within {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border: 2px solid #1a73e8;
-  padding: 0; 
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  border: 1px solid #81c995;
 }
 
 .search-input {
@@ -106,6 +109,7 @@
   border: none;
   border-radius: 8px;
   background-color: transparent;
+  color: #e0e0e0;
   transition: all 0.2s;
 }
 
@@ -115,7 +119,7 @@
 }
 
 .search-input::placeholder {
-  color: #9aa0a6;
+  color: #8b8b8d;
 }
 
 .clear-search-btn {
@@ -123,10 +127,10 @@
   right: 16px;
   top: 50%;
   transform: translateY(-50%);
-  background: #f1f3f4;
+  background: rgba(255, 255, 255, 0.1);
   border: none;
   font-size: 1.2rem;
-  color: #5f6368;
+  color: #a0a0a0;
   cursor: pointer;
   width: 28px;
   height: 28px;
@@ -138,8 +142,8 @@
 }
 
 .clear-search-btn:hover {
-  background-color: #e8eaed;
-  color: #202124;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #e0e0e0;
 }
 
 /* Main content area */
@@ -154,31 +158,33 @@
   justify-content: center;
   align-items: center;
   height: 200px;
-  color: #5f6368;
+  color: #a0a0a0;
   font-size: 1.1rem;
 }
 
 .error-message {
-  background-color: #fdeded;
-  color: #b71c1c;
+  background-color: rgba(183, 28, 28, 0.2);
+  color: #f48fb1;
   padding: 16px;
   border-radius: 8px;
   text-align: center;
   margin: 30px 0;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(183, 28, 28, 0.3);
 }
 
 .empty-state {
   text-align: center;
   padding: 80px 20px;
-  color: #5f6368;
-  background-color: white;
+  color: #a0a0a0;
+  background-color: rgba(30, 30, 34, 0.6);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .empty-state h2 {
-  color: #202124;
+  color: #e0e0e0;
   margin-bottom: 12px;
 }
 
@@ -201,23 +207,25 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  background-color: white;
+  background-color: rgba(30, 30, 34, 0.8);
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border-left: 4px solid transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .password-list-item:hover {
   transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-  border-left: 4px solid #1a73e8;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border-left: 4px solid #81c995;
+  background-color: rgba(40, 40, 44, 0.9);
 }
 
 .password-item-error {
   border-left: 4px solid #e53935;
-  background-color: #fdeded;
+  background-color: rgba(183, 28, 28, 0.2);
 }
 
 .password-item-content {
@@ -227,13 +235,13 @@
 .password-title {
   font-size: 1.05rem;
   font-weight: 500;
-  color: #202124;
+  color: #e0e0e0;
   margin-bottom: 6px;
 }
 
 .password-username {
   font-size: 0.9rem;
-  color: #5f6368;
+  color: #a0a0a0;
 }
 
 .password-item-actions {
@@ -247,9 +255,9 @@
 }
 
 .copy-password-btn {
-  background-color: #f1f3f4;
+  background-color: rgba(255, 255, 255, 0.1);
   border: none;
-  color: #444;
+  color: #e0e0e0;
   padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
@@ -259,7 +267,7 @@
 }
 
 .copy-password-btn:hover {
-  background-color: #e8eaed;
+  background-color: rgba(255, 255, 255, 0.2);
   transform: scale(1.05);
 }
 
@@ -270,7 +278,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(5px);
   display: flex;
   justify-content: flex-end;
@@ -280,16 +288,17 @@
 }
 
 .password-modal {
-  background-color: white;
+  background-color: rgba(24, 24, 26, 0.95);
   width: 90%;
   max-width: 600px;
-  box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
+  box-shadow: -5px 0 25px rgba(0, 0, 0, 0.5);
   animation: slideInFromRight 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   height: 100%;
   overflow-y: auto;
   border-radius: 0;
   display: flex;
   flex-direction: column;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 @keyframes fadeIn {
@@ -324,17 +333,17 @@
   justify-content: space-between;
   align-items: center;
   padding: 18px 24px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: sticky;
   top: 0;
-  background-color: white;
+  background-color: rgba(24, 24, 26, 0.98);
   z-index: 10;
 }
 
 .modal-header h2 {
   margin: 0;
   font-size: 1.4rem;
-  color: #202124;
+  color: #e0e0e0;
 }
 
 .modal-close-btn {
@@ -342,7 +351,7 @@
   border: none;
   font-size: 1.8rem;
   cursor: pointer;
-  color: #5f6368;
+  color: #a0a0a0;
   padding: 0;
   display: flex;
   align-items: center;
@@ -354,8 +363,8 @@
 }
 
 .modal-close-btn:hover {
-  background-color: #f1f3f4;
-  color: #202124;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #e0e0e0;
 }
 
 .modal-body {
@@ -368,6 +377,7 @@
   animation: fadeUp 0.3s ease-out;
   animation-fill-mode: both;
 }
+
 /* Password generator styles */
 .password-input-group {
   display: flex;
@@ -381,9 +391,9 @@
 }
 
 .generate-password-btn {
-  background-color: #f1f3f4;
-  border: 1px solid #dadce0;
-  color: #1a73e8;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #81c995;
   padding: 0 12px;
   border-radius: 6px;
   cursor: pointer;
@@ -394,16 +404,16 @@
 }
 
 .generate-password-btn:hover {
-  background-color: #e8f0fe;
-  border-color: #d2e3fc;
+  background-color: rgba(129, 201, 149, 0.2);
+  border-color: rgba(129, 201, 149, 0.4);
 }
 
 .password-generator {
-  background-color: #f8f9fa;
+  background-color: rgba(30, 30, 34, 0.6);
   padding: 12px;
   border-radius: 6px;
   margin-top: 12px;
-  border: 1px solid #eee;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   animation: fadeIn 0.2s ease-out;
 }
 
@@ -415,14 +425,14 @@
 
 .length-slider span {
   font-size: 0.9rem;
-  color: #5f6368;
+  color: #a0a0a0;
   margin-bottom: 6px;
 }
 
 .slider {
   width: 100%;
   height: 6px;
-  background: #e0e0e0;
+  background: rgba(255, 255, 255, 0.1);
   outline: none;
   border-radius: 3px;
   -webkit-appearance: none;
@@ -434,7 +444,7 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #1a73e8;
+  background: #81c995;
   cursor: pointer;
 }
 
@@ -442,14 +452,14 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #1a73e8;
+  background: #81c995;
   cursor: pointer;
   border: none;
 }
 
 .generate-btn {
-  background-color: #1a73e8;
-  color: white;
+  background-color: #81c995;
+  color: #121214;
   border: none;
   padding: 10px;
   width: 100%;
@@ -461,7 +471,7 @@
 }
 
 .generate-btn:hover {
-  background-color: #1765cc;
+  background-color: #6db17f;
 }
 
 /* Mobile optimizations for password generator */
@@ -494,13 +504,13 @@
   display: block;
   font-weight: 500;
   margin-bottom: 6px;
-  color: #5f6368;
+  color: #a0a0a0;
   font-size: 0.9rem;
 }
 
 .field-value {
   font-size: 1rem;
-  color: #202124;
+  color: #e0e0e0;
   word-break: break-word;
   padding: 6px 0;
 }
@@ -513,7 +523,7 @@
 }
 
 .field-value a {
-  color: #1a73e8;
+  color: #81c995;
   text-decoration: none;
 }
 
@@ -522,36 +532,37 @@
 }
 
 .copy-btn, .show-btn {
-  background-color: #f1f3f4;
+  background-color: rgba(255, 255, 255, 0.1);
   border: none;
   border-radius: 6px;
   padding: 6px 10px;
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
-  color: #444;
+  color: #e0e0e0;
   white-space: nowrap;
   transition: all 0.2s;
 }
 
 .copy-btn:hover, .show-btn:hover {
-  background-color: #e8eaed;
+  background-color: rgba(255, 255, 255, 0.2);
   transform: scale(1.05);
 }
 
 .description {
   white-space: pre-wrap;
-  background-color: #f8f9fa;
+  background-color: rgba(30, 30, 34, 0.6);
   padding: 10px;
   border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .metadata {
-  color: #5f6368;
+  color: #a0a0a0;
   font-size: 0.85rem;
   margin-top: 10px;
   padding-top: 10px;
-  border-top: 1px solid #f1f3f4;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .modal-footer {
@@ -559,10 +570,10 @@
   justify-content: flex-end;
   gap: 12px;
   padding: 18px 24px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   position: sticky;
   bottom: 0;
-  background-color: white;
+  background-color: rgba(24, 24, 26, 0.98);
   z-index: 10;
 }
 
@@ -576,55 +587,56 @@
 }
 
 .edit-btn {
-  background-color: #f1f3f4;
-  border: 1px solid #dadce0;
-  color: #1a73e8;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #81c995;
 }
 
 .delete-btn {
-  background-color: #fef7f7;
-  border: 1px solid #fadede;
-  color: #d93025;
+  background-color: rgba(183, 28, 28, 0.2);
+  border: 1px solid rgba(183, 28, 28, 0.3);
+  color: #f48fb1;
 }
 
 .save-btn {
-  background-color: #1a73e8;
-  color: white;
+  background-color: #81c995;
+  color: #121214;
   border: none;
 }
 
 .cancel-btn {
-  background-color: #f1f3f4;
-  border: 1px solid #dadce0;
-  color: #5f6368;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #a0a0a0;
 }
 
 .edit-btn:hover {
-  background-color: #e8f0fe;
-  border-color: #d2e3fc;
+  background-color: rgba(129, 201, 149, 0.2);
+  border-color: rgba(129, 201, 149, 0.4);
 }
 
 .delete-btn:hover {
-  background-color: #feebeb;
-  border-color: #f7c8c8;
+  background-color: rgba(183, 28, 28, 0.3);
+  border-color: rgba(183, 28, 28, 0.4);
 }
 
 .save-btn:hover {
-  background-color: #1765cc;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  background-color: #6db17f;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .cancel-btn:hover {
-  background-color: #e8eaed;
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 .password-dots {
   letter-spacing: 2px;
   font-family: monospace;
-  background: #f8f9fa;
+  background: rgba(30, 30, 34, 0.6);
   padding: 6px 12px;
   border-radius: 4px;
   display: inline-block;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Edit form styling */
@@ -637,20 +649,21 @@
 .edit-input, .edit-textarea {
   width: calc(100% - 24px); /* Adjust width to account for padding */
   padding: 12px;
-  border: 1px solid #dadce0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 6px;
   font-size: 1rem;
   margin-top: 4px;
   transition: all 0.2s;
-  background-color: #f9fafb;
+  background-color: rgba(30, 30, 34, 0.6);
+  color: #e0e0e0;
   box-sizing: border-box; /* Include padding in width calculation */
 }
 
 .edit-input:focus, .edit-textarea:focus {
-  border-color: #1a73e8;
+  border-color: #81c995;
   outline: none;
-  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
-  background-color: #fff;
+  box-shadow: 0 0 0 2px rgba(129, 201, 149, 0.2);
+  background-color: rgba(40, 40, 44, 0.8);
 }
 
 .edit-textarea {
@@ -670,14 +683,15 @@
 }
 
 .toast-content {
-  background-color: #323232;
+  background-color: rgba(18, 18, 20, 0.95);
   color: white;
   padding: 12px 24px;
   border-radius: 8px;
   display: flex;
   align-items: center;
   gap: 12px;
-  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .toast-icon {
@@ -716,11 +730,49 @@
 .no-results-message {
   text-align: center;
   padding: 40px 20px;
-  color: #5f6368;
-  background-color: white;
+  color: #a0a0a0;
+  background-color: rgba(30, 30, 34, 0.6);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   animation: fadeUp 0.4s ease-out;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.delete-confirmation {
+  width: 100%;
+  text-align: center;
+}
+
+.delete-confirmation p {
+  margin-bottom: 16px;
+  color: #f48fb1;
+  font-weight: 500;
+}
+
+.delete-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+.delete-btn .loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.delete-btn .spinner {
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 2px solid #ffffff;
+  width: 14px;
+  height: 14px;
+  animation: spin 1s linear infinite;
+}
+
+.delete-btn .loading-spinner span {
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 /* Mobile optimizations */
@@ -758,7 +810,7 @@
     opacity: 1;
     width: 40px;
     height: 40px;
-    background-color: #f1f3f4;
+    background-color: rgba(255, 255, 255, 0.1);
   }
   
   /* Make form fields fit better on mobile */
