@@ -28,37 +28,49 @@ const Login = () => {
     e.preventDefault();
     setError('');
     setLoading(true);
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
     
     try {
-     
       if (credentials.email && credentials.password) {
         const response = await loginUser(credentials);
-        if (response.status === 200) {
-          const data = response.data;
-          console.log('Login successful:', data);
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('userId', data.userId);
-          const encryptedSalt = data.encryptionSalt;
-          const aesKey = await deriveAESKey(credentials.password, encryptedSalt);
-          setAESKey(aesKey);
-          console.log("aeskey: ", getAESKey(), "+", aesKey);
-          
-          navigate('/dashboard');         
-        } else {
-          setError('Invalid email or password');
-        }
+        const data = response.data;
+        console.log('Login successful:', data);
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('userId', data.userId);
+        const encryptedSalt = data.encryptionSalt;
+        const aesKey = await deriveAESKey(credentials.password, encryptedSalt);
+        setAESKey(aesKey);
+        console.log("aeskey: ", getAESKey(), "+", aesKey);
+        
+        navigate('/dashboard');         
       } else if (!credentials.email && !credentials.password) {
         setError('Please fill in all fields');
       } else {
         setError('Please fill in all fields');
       }
     } catch (e) {
-      setError('Login failed. Please check your credentials.');
       console.error('Login error:', e);
-    }finally {
+      
+      if (e.response) {
+        const errorResponse = e.response.data;
+        const errorMessage = errorResponse?.message || 'Login failed';
+        
+        if (e.response.status === 401) {
+          setError(errorMessage); 
+        } else if (e.response.status === 400) {
+          setError(errorMessage);
+        } else {
+          setError(`${errorMessage} (${e.response.status})`);
+        }
+      } else if (e.request) {
+        setError('Server not responding. Please try again later.');
+      } else {
+        setError('Login failed. Please check your credentials.');
+      }
+    } finally {
       setLoading(false);
     }
-
   };
 
   return (

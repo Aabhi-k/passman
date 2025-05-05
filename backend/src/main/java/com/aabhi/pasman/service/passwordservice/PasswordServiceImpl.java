@@ -2,6 +2,8 @@ package com.aabhi.pasman.service.passwordservice;
 
 import com.aabhi.pasman.dto.password.PasswordDto;
 import com.aabhi.pasman.dto.password.PasswordResponseDto;
+import com.aabhi.pasman.exception.InvalidPasswordDataException;
+import com.aabhi.pasman.exception.PasswordNotFoundException;
 import com.aabhi.pasman.model.Password;
 import com.aabhi.pasman.repository.PasswordRepository;
 import com.aabhi.pasman.service.authservice.AuthService;
@@ -10,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PasswordServiceImpl implements PasswordService {
@@ -23,94 +24,101 @@ public class PasswordServiceImpl implements PasswordService {
         this.authService = authService;
     }
 
-
     @Override
-    public void insertPassword(PasswordDto passwordDto) throws Exception {
+    public void insertPassword(PasswordDto passwordDto) {
        String userId = passwordDto.getUserId();
        if (userId == null) {
-           throw new Exception("User ID is null");
+           throw new InvalidPasswordDataException("User ID is null");
        } else if (!authService.checkUser(userId)) {
-           throw new Exception("User not found");
+           throw new InvalidPasswordDataException("User not found");
        }
+       
+       // Validate required password data
+       if (passwordDto.getEncryptedData() == null || passwordDto.getEncryptedData().isEmpty()) {
+           throw new InvalidPasswordDataException("Encrypted data cannot be empty");
+       }
+       if (passwordDto.getIv() == null || passwordDto.getIv().isEmpty()) {
+           throw new InvalidPasswordDataException("IV cannot be empty");
+       }
+       if (passwordDto.getAuthTag() == null || passwordDto.getAuthTag().isEmpty()) {
+           throw new InvalidPasswordDataException("Auth tag cannot be empty");
+       }
+       
        Password password = toPassword(passwordDto);
-
-        passwordRepository.save(password);
-
+       passwordRepository.save(password);
     }
 
-
-
     @Override
-    public PasswordResponseDto getPassword(String passwordId) throws Exception {
+    public PasswordResponseDto getPassword(String passwordId) {
         if (passwordId == null) {
-            throw new Exception("Password ID is null");
+            throw new InvalidPasswordDataException("Password ID is null");
         }
-        Optional<Password> password = passwordRepository.findById(passwordId);
-        if(password.isPresent()) {
-            Password foundPassword = password.get();
-            return PasswordResponseDto.builder()
-                    .id(foundPassword.getId())
-                    .encryptedData(foundPassword.getEncryptedData())
-                    .iv(foundPassword.getIv())
-                    .authTag(foundPassword.getAuthTag())
-                    .userId(foundPassword.getUser().getId())
-                    .createdAt(foundPassword.getCreatedAt().getTime())
-                    .updatedAt(foundPassword.getUpdatedAt().getTime())
-                    .build();
-        }
-        else {
-            throw new Exception("Password not found");
-        }
+        return passwordRepository.findById(passwordId)
+            .map(this::toPasswordDto)
+            .orElseThrow(() -> new PasswordNotFoundException("Password not found with ID: " + passwordId));
     }
 
     @Override
-    public void updatePassword(PasswordDto passwordDto, String passwordId) throws Exception {
-        Password password = passwordRepository.findById(passwordId).get();
+    public void updatePassword(PasswordDto passwordDto, String passwordId) {
+        if (passwordId == null) {
+            throw new InvalidPasswordDataException("Password ID is null");
+        }
+        
+        Password password = passwordRepository.findById(passwordId)
+            .orElseThrow(() -> new PasswordNotFoundException("Password not found with ID: " + passwordId));
+        
+        boolean isModified = false;
+        
         if (passwordDto.getEncryptedData() != null) {
             password.setEncryptedData(passwordDto.getEncryptedData());
+            isModified = true;
         }
         if (passwordDto.getIv() != null) {
             password.setIv(passwordDto.getIv());
+            isModified = true;
         }
         if (passwordDto.getAuthTag() != null) {
             password.setAuthTag(passwordDto.getAuthTag());
+            isModified = true;
         }
+        
+        if (!isModified) {
+            throw new InvalidPasswordDataException("No data provided for update");
+        }
+        
         password.setUpdatedAt(new Date());
         passwordRepository.save(password);
     }
 
     @Override
-    public String deletePassword(String passwordId) throws Exception {
+    public String deletePassword(String passwordId) {
         if(passwordId == null) {
-            throw new Exception("Password ID is null");
+            throw new InvalidPasswordDataException("Password ID is null");
         }
-        Optional<Password> password = passwordRepository.findById(passwordId);
-        if(password.isPresent()) {
-            passwordRepository.deleteById(passwordId);
-            return "Password deleted successfully";
+        
+        if(!passwordRepository.existsById(passwordId)) {
+            throw new PasswordNotFoundException("Password not found with ID: " + passwordId);
         }
-        else {
-            throw new Exception("Password not found");
-        }
+        
+        passwordRepository.deleteById(passwordId);
+        return "Password deleted successfully";
     }
 
     @Override
     public List<PasswordResponseDto> getAllPasswords(String userId) {
         if (userId == null) {
-            return null;
-        } else if (!authService.checkUser(userId)) {
-            return null;
+            throw new InvalidPasswordDataException("User ID is null");
+        }
+        
+        if (!authService.checkUser(userId)) {
+            throw new InvalidPasswordDataException("User not found with ID: " + userId);
         }
 
         List<Password> passwords = passwordRepository.findByUserId(userId);
-
-        if (passwords.isEmpty()) {
-            return null;
-        }
+        
         return passwords.stream()
                 .map(this::toPasswordDto)
                 .toList();
-
     }
 
     // Mappers

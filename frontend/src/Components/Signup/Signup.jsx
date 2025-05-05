@@ -3,7 +3,7 @@ import './Signup.css';
 import { registerUser } from '../api/api';
 import { deriveAESKey } from '../Encryption/CryptoUtils';
 import { setAESKey } from '../Encryption/AesKeyStore';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import passmanLogo from '../../assets/passmanLogo.png';
 
 const Signup = () => {
@@ -14,29 +14,25 @@ const Signup = () => {
     confirmPassword: ''
   });
 
-  const [userData, setUserData] = useState({
-    username: '',
-    email: '',
-    password: ''
-  });
-
   const [loading, setLoading] = useState(false);
-
-  let navigate = useNavigate();
-
-  
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData(prevData => ({
+      ...prevData,
       [name]: value
-    });
+    }));
+    // Clear error message when user starts typing again
+    if (error) setError('');
   };
 
   const validateForm = () => {
+    setLoading(false); // Ensure loading is disabled if validation fails
+    
     if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
       setError('All fields are required');
       return false;
@@ -51,6 +47,7 @@ const Signup = () => {
       setError('Password must be at least 8 characters long');
       return false;
     }
+    
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       setError('Please enter a valid email address');
@@ -60,47 +57,69 @@ const Signup = () => {
     return true;
   };
 
-
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
-    setLoading(true);
     
     if (!validateForm()) {
       return;
     }
     
+    setLoading(true);
+    
     try {
-      setUserData({
+      const userData = {
         username: formData.username,
         email: formData.email,
         password: formData.password
-      });
+      };
 
       const response = await registerUser(userData);
-
-      if (response.status !== 200) {
-        setError('Signup failed. Please try again.');
-        return;
+      
+      if (!response || response.status !== 200) {
+        throw new Error(response?.data?.message || 'Signup failed');
       }
+      
+      // Save auth data to localStorage
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('userId', response.data.userId);
       
-      const salt = response.data.encryptedSalt;
+      // Generate encryption key from password and salt
+      const salt = response.data.encryptionSalt;
       const aesKey = await deriveAESKey(formData.password, salt);
       setAESKey(aesKey);
             
-      setSuccess('Account created successfully! Please check your email to verify your account.');
+      setSuccess('Account created successfully!');
       
-      navigate("/home");
+      // Short delay to show success message before redirecting
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1000);
       
     } catch (err) {
-      setError('Signup failed. Please try again.');
       console.error('Signup error:', err);
-
+      
+      // Handle specific error cases
+      if (err.response) {
+        // Server responded with an error status
+        const status = err.response.status;
+        const message = err.response.data?.message;
+        
+        if (status === 409 || message?.includes('already exists')) {
+          setError('This email is already registered. Please use a different email or login.');
+        } else if (status === 400) {
+          setError('Invalid information provided. Please check your details.');
+        } else {
+          setError(`Signup failed: ${message || 'Please try again later.'}`);
+        }
+      } else if (err.request) {
+        // Request was made but no response
+        setError('Network error. Please check your connection and try again.');
+      } else {
+        // Something else went wrong
+        setError('Signup failed. Please try again later.');
+      }
     } finally {
       setLoading(false);
     }
@@ -127,7 +146,7 @@ const Signup = () => {
               value={formData.username}
               onChange={handleChange}
               placeholder="Choose a username"
-              required
+              disabled={loading}
               className='form-input'
             />
           </div>
@@ -141,7 +160,7 @@ const Signup = () => {
               value={formData.email}
               onChange={handleChange}
               placeholder="Enter your email"
-              required
+              disabled={loading}
               className='form-input'
             />
           </div>
@@ -155,7 +174,7 @@ const Signup = () => {
               value={formData.password}
               onChange={handleChange}
               placeholder="Create a password"
-              required
+              disabled={loading}
               className='form-input'
             />
           </div>
@@ -169,25 +188,27 @@ const Signup = () => {
               value={formData.confirmPassword}
               onChange={handleChange}
               placeholder="Confirm your password"
-              required
+              disabled={loading}
               className='form-input'
             />
           </div>
           
-          <button type="submit" className="signup-button">
-            { loading ? (
+          <button type="submit" className="signup-button" disabled={loading}>
+            {loading ? (
               <div className="loading-spinner">
-              <div className="spinner"></div>
-              <span>Creating account...</span>
-            </div>
-            ):(
+                <div className="spinner"></div>
+                <span>Creating account...</span>
+              </div>
+            ) : (
               'Create Account'
             )}
           </button>
         </form>
         
         <div className="signup-footer">
-          <p className='signup-footer-text'>Already have an account? <a href="/login" className='signup-footer-link'>Log in</a></p>
+          <p className='signup-footer-text'>
+            Already have an account? <Link to="/login" className='signup-footer-link'>Log in</Link>
+          </p>
         </div>
       </div>
     </div>

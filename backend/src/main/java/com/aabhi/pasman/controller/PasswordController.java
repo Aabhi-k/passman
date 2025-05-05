@@ -3,6 +3,7 @@ package com.aabhi.pasman.controller;
 import com.aabhi.pasman.dto.password.PasswordDto;
 import com.aabhi.pasman.dto.password.PasswordResponseDto;
 import com.aabhi.pasman.service.passwordservice.PasswordService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,53 +21,31 @@ public class PasswordController {
 
     @PostMapping("/insert")
     public ResponseEntity<String> insertPassword(@RequestBody PasswordDto passwordDto) {
-        try {
-            passwordService.insertPassword(passwordDto);
-            return ResponseEntity.ok("Password inserted successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error inserting password: " + e.getMessage());
-        }
+        passwordService.insertPassword(passwordDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Password inserted successfully");
     }
 
     @GetMapping("/getall/{userId}")
     public ResponseEntity<List<PasswordResponseDto>> getAllPasswords(@PathVariable String userId) {
-       try {
-              List<PasswordResponseDto> passwordDto = passwordService.getAllPasswords(userId);
-              return ResponseEntity.ok(passwordDto);
-         } catch (Exception e) {
-              return ResponseEntity.status(500).body(null);
-       }
+        List<PasswordResponseDto> passwords = passwordService.getAllPasswords(userId);
+        return ResponseEntity.ok(passwords.isEmpty() ? List.of() : passwords);
     }
 
     @GetMapping("/get/{passwordId}")
     public ResponseEntity<PasswordResponseDto> getPassword(@PathVariable String passwordId) {
-        try{
-            PasswordResponseDto passwordDto = passwordService.getPassword(passwordId);
-            return ResponseEntity.ok(passwordDto);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body(null);
-        }
+        PasswordResponseDto passwordDto = passwordService.getPassword(passwordId);
+        return ResponseEntity.ok(passwordDto);
     }
 
     @PutMapping("/update/{passwordId}")
     public ResponseEntity<String> updatePassword(@RequestBody PasswordDto passwordDto, @PathVariable String passwordId) {
-        try {
-            passwordService.updatePassword(passwordDto, passwordId);
-            return ResponseEntity.ok("Password updated successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error updating password: " + e.getMessage());
-        }
+        passwordService.updatePassword(passwordDto, passwordId);
+        return ResponseEntity.ok("Password updated successfully");
     }
 
     @DeleteMapping("/delete/{passwordId}")
     public ResponseEntity<String> deletePassword(@PathVariable String passwordId) {
-        try {
-            String response = passwordService.deletePassword(passwordId);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error deleting password: " + e.getMessage());
-        }
+        String response = passwordService.deletePassword(passwordId);
+        return ResponseEntity.ok(response);
     }
-
-
 }

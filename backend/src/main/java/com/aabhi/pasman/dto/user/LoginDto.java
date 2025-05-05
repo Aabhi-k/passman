@@ -1,14 +1,14 @@
 package com.aabhi.pasman.dto.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
+@Setter
 @AllArgsConstructor
 @Builder
+@NoArgsConstructor
 public class LoginDto {
-    private final String email;
-    private final String password;
+    private String email;
+    private String password;
 
 }

@@ -3,11 +3,15 @@ package com.aabhi.pasman.service.authservice;
 import com.aabhi.pasman.dto.user.LoginDto;
 import com.aabhi.pasman.dto.user.LoginResponseDto;
 import com.aabhi.pasman.dto.user.UserDto;
+import com.aabhi.pasman.exception.AuthenticationFailedException;
+import com.aabhi.pasman.exception.InvalidUserDataException;
+import com.aabhi.pasman.exception.UserAlreadyExistsException;
 import com.aabhi.pasman.model.User;
 import com.aabhi.pasman.repository.UserRepository;
 import com.aabhi.pasman.security.jwt.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +20,7 @@ import java.util.Base64;
 import java.util.Optional;
 
 @Service
-public class AuthServiceImpl implements AuthService{
+public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
@@ -32,88 +36,114 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public LoginResponseDto login(LoginDto loginDto) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginDto.getEmail(),
-                        loginDto.getPassword()
-                )
-        );
-        User authenticatedUser = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
-        String token = jwtService.generateToken(authenticatedUser);
+        try {
+            // Validate input data first
+            if (loginDto.getEmail() == null || loginDto.getPassword() == null) {
+                throw new InvalidUserDataException("Email and password are required");
+            }
+            
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginDto.getEmail(),
+                            loginDto.getPassword()
+                    )
+            );
+            
+            User authenticatedUser = userRepository.findByEmail(loginDto.getEmail())
+                    .orElseThrow(() -> new AuthenticationFailedException("User not found"));
+                    
+            String token = jwtService.generateToken(authenticatedUser);
 
-        return LoginResponseDto.builder()
-                .token(token)
-                .encryptionSalt(authenticatedUser.getEncryptionSalt())
-                .userId(authenticatedUser.getId())
-                .build();
+            return LoginResponseDto.builder()
+                    .token(token)
+                    .encryptionSalt(authenticatedUser.getEncryptionSalt())
+                    .userId(authenticatedUser.getId())
+                    .build();
+                    
+        } catch (AuthenticationException e) {
+            throw new AuthenticationFailedException("Invalid email or password");
+        }
     }
 
     @Override
     public LoginResponseDto register(UserDto userDto) {
+        // Validate input data
         if (userDto.getUsername() == null || userDto.getEmail() == null || userDto.getPassword() == null) {
-            return null;
+            throw new InvalidUserDataException("Username, email, and password are required");
         }
 
         String username = userDto.getUsername();
         String email = userDto.getEmail();
         String rawPassword = userDto.getPassword();
 
-        String password = bCryptPasswordEncoder.encode(rawPassword);
-
-        // Email validation
+        // Validate email format
         String emailRegex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
         if (!email.matches(emailRegex)) {
-            return null;
+            throw new InvalidUserDataException("Invalid email format");
         }
 
-        // Username validation (alphanumeric)
+        // Validate username format
         String usernameRegex = "^[a-zA-Z0-9]*$";
         if (!username.matches(usernameRegex)) {
-            return null;
+            throw new InvalidUserDataException("Username must contain only letters and numbers");
+        }
+        
+        // Validate password length
+        if (rawPassword.length() < 8) {
+            throw new InvalidUserDataException("Password must be at least 8 characters long");
         }
 
         // Check if user already exists
         Optional<User> existingUser = userRepository.findByEmail(email);
         if (existingUser.isPresent()) {
-            throw new RuntimeException("User already exists");
+            throw new UserAlreadyExistsException("User with this email already exists");
         }
 
-        // 🧂 Generate AES encryption salt
-        String encryptionSalt = AESKeyUtils.generateSalt(); // Must be Base64-encoded
+        // Generate encryption salt and hash password
+        String password = bCryptPasswordEncoder.encode(rawPassword);
+        String encryptionSalt = AESKeyUtils.generateSalt();
 
-        // 🔐 Build and save the user
-        User user = User.builder()
-                .username(username)
-                .password(password)
-                .email(email)
-                .encryptionSalt(encryptionSalt)
-                .build();
+        // Create and save user
+        try {
+            User user = User.builder()
+                    .username(username)
+                    .password(password)
+                    .email(email)
+                    .encryptionSalt(encryptionSalt)
+                    .build();
 
-        userRepository.save(user);
-        String token = jwtService.generateToken(user);
-        // ✅ Return JWT token
-        return LoginResponseDto.builder()
-                .token(token)
-                .encryptionSalt(encryptionSalt)
-                .userId(userRepository.findByEmail(email).get().getId())
-                .build();
+            User savedUser = userRepository.save(user);
+            String token = jwtService.generateToken(savedUser);
+            
+            return LoginResponseDto.builder()
+                    .token(token)
+                    .encryptionSalt(encryptionSalt)
+                    .userId(savedUser.getId())
+                    .build();
+                    
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating user: " + e.getMessage());
+        }
     }
 
-
     @Override
-    public boolean checkUser(String id){
+    public boolean checkUser(String id) {
+        if (id == null || id.trim().isEmpty()) {
+            return false;
+        }
+        
         Optional<User> user = userRepository.findById(id);
         return user.isPresent();
     }
 
     @Override
     public User getUserById(String id) {
-        Optional<User> user = userRepository.findById(id);
-        if(user.isPresent()){
-            return user.get();
-        } else {
-            throw new RuntimeException("User not found");
+        if (id == null || id.trim().isEmpty()) {
+            throw new InvalidUserDataException("User ID cannot be empty");
         }
+        
+        return userRepository.findById(id)
+                .orElseThrow(() -> new AuthenticationFailedException("User not found"));
     }
 }
 

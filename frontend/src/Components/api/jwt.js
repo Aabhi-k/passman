@@ -31,7 +31,7 @@ const storeToken = (token) => {
  */
 const removeToken = () => {
   localStorage.removeItem(TOKEN_KEY);
-  localStorage.removeItem('userId'); // Also clear userId
+  localStorage.removeItem('userId'); 
   setAuthHeader(null);
 };
 
@@ -117,8 +117,11 @@ const setupInterceptors = () => {
   axios.interceptors.response.use(
     (response) => response,
     (error) => {
-      // If unauthorized, redirect to login page
-      if (error.response?.status === 401) {
+      // Don't redirect for login/register endpoints when they return 401
+      const isAuthEndpoint = error.config.url.includes('/api/auth/login') || 
+                            error.config.url.includes('/api/auth/register');
+      
+      if (error.response?.status === 401 && !isAuthEndpoint) {
         console.log('Session expired. Please log in again.');
         removeToken();
         window.location.href = '/login';
@@ -136,12 +139,18 @@ const initAuth = () => {
   const token = getToken();
   
   if (token) {
-    // Check if token is valid and not expired
-    if (!isTokenExpired(token)) {
-      setAuthHeader(token);
-    } else {
-      // If token is expired, remove it
-      console.log('Session expired. Please log in again.');
+    try {
+      // Check if token is valid and not expired
+      if (!isTokenExpired(token)) {
+        setAuthHeader(token);
+      } else {
+        // If token is expired, remove it
+        console.log('Session expired during initialization. Please log in again.');
+        removeToken();
+      }
+    } catch (error) {
+      // Handle corrupted tokens
+      console.error('Invalid token found, removing it:', error);
       removeToken();
     }
   }
