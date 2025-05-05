@@ -26,12 +26,11 @@ const Signup = () => {
       ...prevData,
       [name]: value
     }));
-    // Clear error message when user starts typing again
     if (error) setError('');
   };
 
   const validateForm = () => {
-    setLoading(false); // Ensure loading is disabled if validation fails
+    setLoading(false); 
     
     if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
       setError('All fields are required');

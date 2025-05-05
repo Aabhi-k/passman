@@ -5,6 +5,7 @@ import Login from './Components/Login/Login';
 import Signup from './Components/Signup/Signup';
 import Dashboard from './Components/Dashboard/Dashboard';
 import InsertPassword from './Components/Manager/InsertPassword/InsertPassword';
+import Setting from './Components/Setting/Setting';
 import { authService } from './Components/api/jwt';
 
 // Protected route component to check authentication
@@ -49,6 +50,15 @@ function App() {
               <InsertPassword />
             </ProtectedRoute>
           }
+        />
+
+        <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <Setting />
+          </ProtectedRoute>
+        }
         />
       </Routes>
     </BrowserRouter>

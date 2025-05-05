@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 import { getAllPasswords, updatePassword, deletePassword } from '../api/api';
 import { decryptData, encryptData } from '../Encryption/CryptoUtils';
 import { getAESKey } from './../Encryption/AesKeyStore';
+
 import passmanlogo from '../../assets/passmanLogo.png';
+
+import searchIcon from '../../assets/icons/search.svg';
+import signoutIcon from '../../assets/icons/signout.svg';
+import settingsIcon from '../../assets/icons/gear-solid.svg';
 
 const Dashboard = () => {
   const [selectedPassword, setSelectedPassword] = useState(null);
@@ -34,6 +39,9 @@ const Dashboard = () => {
 
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  const [showMenu, setShowMenu] = useState(false);
+  const menuRef = useRef(null);
 
   useEffect(() => {
     let toastTimer;
@@ -92,6 +100,19 @@ const Dashboard = () => {
     }
 
   }, [navigate, refreshPasswords]);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowMenu(false);
+      }
+    }
+    
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuRef]);
 
   const handleAddPassword = () => {
     navigate('/insert-password');
@@ -227,6 +248,21 @@ const Dashboard = () => {
     }
   }
 
+  const handleMenuToggle = () => {
+    setShowMenu(!showMenu);
+  };
+
+  const handleSignOut = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    
+    navigate('/login');
+  };
+  
+  const navigateToSettings = () => {
+    navigate('/settings');
+  };
+
   return (
     <div className="dashboard-container">
       {showSuccessToast && (
@@ -250,30 +286,55 @@ const Dashboard = () => {
           >
             Add Password
           </button>
-          <button className="user-menu-btn">
-            <i className="fas fa-user-circle"></i>
-          </button>
+          <div className="user-menu-container" ref={menuRef}>
+            <button 
+              className="user-menu-btn"
+              onClick={handleMenuToggle}
+              aria-label="User menu"
+            >
+              <i className="hamburger-icon"></i>
+            </button>
+            {showMenu && (
+              <div className="user-dropdown-menu">
+                <button 
+                  className="menu-item"
+                  onClick={navigateToSettings}
+                >
+                  <img src={settingsIcon} alt="Settings" className="menu-icon" />
+                  Settings
+                </button>
+                <button 
+                  className="menu-item"
+                  onClick={handleSignOut}
+                >
+                  <img src={signoutIcon} alt="Sign out" className="menu-icon" />
+                  Sign Out
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </header>
 
       <div className="search-container">
-            <input
-              type="text"
-              placeholder="Search passwords..."
-              value={searchTerm}
-              onChange={handleSearch}
-              className="search-input"
-            />
-            {searchTerm && (
-              <button 
-                className="clear-search-btn"
-                onClick={() => setSearchTerm('')}
-                title="Clear search"
-              >
-                ×
-              </button>
-            )}
-          </div>
+        <img src={searchIcon} alt="Search" className="search-icon" />
+        <input
+          type="text"
+          placeholder="Search passwords..."
+          value={searchTerm}
+          onChange={handleSearch}
+          className="search-input"
+        />
+        {searchTerm && (
+          <button 
+            className="clear-search-btn"
+            onClick={() => setSearchTerm('')}
+            title="Clear search"
+          >
+            ×
+          </button>
+        )}
+      </div>
 
       <main className="dashboard-content">
         {loading ? (

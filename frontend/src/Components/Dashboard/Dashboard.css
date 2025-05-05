@@ -66,6 +66,52 @@
   font-weight: bold;
 }
 
+.add-password-btn-large {
+  background-color: #81c995;
+  color: #121214;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 24px auto 0;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.add-password-btn-large:hover {
+  background-color: #6db17f;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+.add-password-btn-large:active {
+  transform: translateY(0);
+}
+
+.add-password-btn-large:before {
+  content: "+";
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 576px) {
+  .add-password-btn-large {
+    width: 100%;
+    justify-content: center;
+    padding: 16px;
+  }
+}
+
+.user-menu-container {
+  position: relative;
+}
+
 .user-menu-btn {
   background: none;
   border: none;
@@ -79,6 +125,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
+  transition: background-color 0.2s;
 }
 
 .user-menu-btn:hover {
@@ -86,6 +133,137 @@
   color: #81c995;
 }
 
+/* Hamburger icon */
+.hamburger-icon {
+  position: relative;
+  width: 20px;
+  height: 2px;
+  background-color: #e0e0e0;
+  display: block;
+}
+
+.hamburger-icon::before,
+.hamburger-icon::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 2px;
+  background-color: #e0e0e0;
+  transition: transform 0.2s;
+}
+
+.hamburger-icon::before {
+  top: -6px;
+}
+
+.hamburger-icon::after {
+  top: 6px;
+}
+
+/* Dropdown menu */
+.user-dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 45px;
+  background-color: rgba(30, 30, 34, 0.95);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  min-width: 180px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: fadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Menu items */
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  color: #e0e0e0;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.menu-item:hover {
+  background-color: rgba(40, 40, 44, 1);
+}
+
+.menu-item:first-child {
+  border-radius: 6px 6px 0 0;
+}
+
+.menu-item:last-child {
+  border-radius: 0 0 6px 6px;
+}
+
+/* Replace existing menu-icon styling with this */
+.menu-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 10px;
+  filter: invert(90%); /* Makes the SVG icons white */
+}
+
+/* For the settings icon specifically */
+.menu-item:first-child .menu-icon {
+  filter: invert(80%) sepia(20%) saturate(80%) hue-rotate(90deg); /* Makes the settings icon green to match your theme */
+}
+
+/* Settings icon */
+.settings-icon::before {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 2px solid #81c995;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+}
+
+.settings-icon::after {
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 3px;
+  background-color: #81c995;
+  top: 13px;
+  left: 7px;
+  box-shadow: -3px -3px 0 0 #81c995, 3px -3px 0 0 #81c995, -3px -6px 0 0 #81c995, 3px -6px 0 0 #81c995;
+  transform: rotate(0deg);
+}
+
+/* Sign out icon */
+.signout-icon::before {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 2px solid #e0e0e0;
+  border-radius: 50%;
+  border-right-color: transparent;
+  top: 0;
+  left: 2px;
+  transform: rotate(-45deg);
+}
+
+.signout-icon::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 2px;
+  background-color: #e0e0e0;
+  top: 7px;
+  right: 2px;
+}
+
+/* Update the search-container styling */
 .search-container {
   position: relative;
   margin: 0 0 24px 0;
@@ -102,9 +280,23 @@
   border: 1px solid #81c995;
 }
 
+/* Add search icon styling */
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  opacity: 0.7;
+  color: #e0e0e0;
+  filter: invert(90%); /* Makes the SVG icon white */
+}
+
+/* Update search-input padding to accommodate icon */
 .search-input {
   width: 100%;
-  padding: 16px 52px 16px 20px;
+  padding: 16px 52px 16px 44px; /* Added left padding for search icon */
   font-size: 1rem;
   border: none;
   border-radius: 8px;
@@ -835,5 +1027,15 @@
   .dashboard-actions {
     width: 100%;
     justify-content: space-between;
+  }
+}
+
+@media (max-width: 576px) {
+  .user-dropdown-menu {
+    right: -10px;
+  }
+  
+  .menu-item {
+    padding: 14px 16px;
   }
 }
