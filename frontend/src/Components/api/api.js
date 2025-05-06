@@ -25,16 +25,16 @@ api.interceptors.request.use(
 );
 
 // Handle 401 errors
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      console.log('Session expired. Please log in again.');
-      authService.logout(); // This will remove token and redirect to login
-    }
-    return Promise.reject(error);
-  }
-);
+// api.interceptors.response.use(
+//   (response) => response,
+//   (error) => {
+//     if (error.response?.status === 401) {
+//       console.log('Session expired. Please log in again.');
+//       authService.logout(); // This will remove token and redirect to login
+//     }
+//     return Promise.reject(error);
+//   }
+// );
 
 /**
  * Register a new user
@@ -61,6 +61,45 @@ export const loginUser = async (credentials) => {
     return { status: 200, data: response };
   } catch (error) {
     console.error('Error logging in user:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get current user details
+ */
+export const getUserDetails = async () => {
+  try {
+    const response = await api.get('/user/details');
+    return response;
+  } catch (error) {
+    console.error('Error fetching user details:', error);
+    throw error;
+  }
+};
+
+/**
+ * Update user profile details
+ */
+export const updateUserDetails = async (userData) => {
+  try {
+    const response = await api.put('/user/update', userData);
+    return response;
+  } catch (error) {
+    console.error('Error updating user details:', error);
+    throw error;
+  }
+};
+
+/**
+ * Change user password
+ */
+export const changeUserPassword = async (passwordData) => {
+  try {
+    const response = await api.post('/user/change-password', passwordData);
+    return response;
+  } catch (error) {
+    console.error('Error changing password:', error);
     throw error;
   }
 };

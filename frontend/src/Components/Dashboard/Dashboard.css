@@ -353,6 +353,29 @@
   color: #a0a0a0;
   font-size: 1.1rem;
 }
+.delete-loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: unset;
+}
+
+.delete-spinner {
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 2px solid #ffffff;
+  width: 14px;
+  height: 14px;
+  animation: spin 1s linear infinite;
+  flex-shrink: 0; 
+}
+
+.delete-loading-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap; /* Keep text on one line */
+}
 
 .error-message {
   background-color: rgba(183, 28, 28, 0.2);

@@ -58,23 +58,28 @@ const Dashboard = () => {
     try {
       const response = await getAllPasswords(localStorage.getItem('userId'));
       const key = await getAESKey();
-      if (response.status === 200 && response.data) {
-        const decryptedPasswords = await Promise.all(
-          response.data.map(async (encryptedPassword) => {
-            try {
-              return await decryptData(encryptedPassword, key);
-            } catch (decryptError) {
-              console.error('Failed to decrypt password:', decryptError);
-              return {
-                title: 'Decryption failed',
-                username: 'Error',
-                error: true
-              };
-            }
-          })
-        );
-        
-        setPasswords(decryptedPasswords);
+      if (response.status === 200) {
+        if (!response.data || response.data.length === 0) {
+          // Handle empty password list properly
+          setPasswords([]);
+        } else {
+          const decryptedPasswords = await Promise.all(
+            response.data.map(async (encryptedPassword) => {
+              try {
+                return await decryptData(encryptedPassword, key);
+              } catch (decryptError) {
+                console.error('Failed to decrypt password:', decryptError);
+                return {
+                  title: 'Decryption failed',
+                  username: 'Error',
+                  error: true
+                };
+              }
+            })
+          );
+          
+          setPasswords(decryptedPasswords);
+        }
       } else {
         setError('Failed to load your passwords. Please try again.');
       }
@@ -595,9 +600,9 @@ const Dashboard = () => {
             disabled={isDeleting}
           >
             {isDeleting ? (
-              <div className="loading-spinner">
-                <div className="spinner"></div>
-                <span>Deleting...</span>
+              <div className="delete-loading-spinner">
+                <div className="delete-spinner"></div>
+                <span className="delete-loading-text">Deleting...</span>
               </div>
             ) : 'Confirm Delete'}
           </button>

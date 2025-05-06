@@ -2,7 +2,7 @@ import { useState } from 'react';
 import './Login.css';
 import { loginUser } from '../api/api';
 import { deriveAESKey } from '../Encryption/CryptoUtils';
-import { getAESKey, setAESKey } from '../Encryption/AesKeyStore';
+import { setAESKey } from '../Encryption/AesKeyStore';
 import { useNavigate } from 'react-router-dom';
 import passmanLogo from '../../assets/passmanLogo.png'
 
@@ -35,13 +35,11 @@ const Login = () => {
       if (credentials.email && credentials.password) {
         const response = await loginUser(credentials);
         const data = response.data;
-        console.log('Login successful:', data);
         localStorage.setItem('token', data.token);
         localStorage.setItem('userId', data.userId);
         const encryptedSalt = data.encryptionSalt;
         const aesKey = await deriveAESKey(credentials.password, encryptedSalt);
         setAESKey(aesKey);
-        console.log("aeskey: ", getAESKey(), "+", aesKey);
         
         navigate('/dashboard');         
       } else if (!credentials.email && !credentials.password) {
@@ -114,10 +112,10 @@ const Login = () => {
           
           <button type="submit" className="login-button">
             {loading ? (
-             <div className="loading-spinner">
-             <div className="spinner"></div>
-             <span>Logging in...</span>
-           </div>
+              <div className="login-loading-spinner">
+                <div className="login-spinner"></div>
+                <span className="login-loading-text">Logging in...</span>
+              </div>
             ) : 'Login'}
           </button>
         </form>

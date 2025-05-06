@@ -139,25 +139,27 @@
   color: #5c9aff;
 }
 
-.loading-spinner {
+.login-loading-spinner {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px; /* Space between spinner and text */
+  gap: 8px; /* Increased gap for better spacing */
 }
 
-.spinner {
+.login-spinner {
   border: 3px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   border-top: 3px solid #ffffff;
-  width: 16px; /* Explicit width */
-  height: 16px; /* Explicit height */
+  width: 16px; 
+  height: 16px;
   animation: spin 1s linear infinite;
+  flex-shrink: 0; /* Prevent the spinner from shrinking */
 }
 
-.loading-text {
-  font-size: 0.95rem; /* Slightly smaller text */
+.login-loading-text {
+  font-size: 0.95rem;
   font-weight: 500;
+  white-space: nowrap; /* Keep text on one line */
 }
 
 @keyframes spin {

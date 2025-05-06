@@ -1,11 +1,11 @@
 package com.aabhi.pasman.service.authservice;
 
-import com.aabhi.pasman.dto.user.LoginDto;
-import com.aabhi.pasman.dto.user.LoginResponseDto;
-import com.aabhi.pasman.dto.user.UserDto;
-import com.aabhi.pasman.exception.AuthenticationFailedException;
-import com.aabhi.pasman.exception.InvalidUserDataException;
-import com.aabhi.pasman.exception.UserAlreadyExistsException;
+import com.aabhi.pasman.dto.auth.LoginDto;
+import com.aabhi.pasman.dto.auth.LoginResponseDto;
+import com.aabhi.pasman.dto.auth.UserDto;
+import com.aabhi.pasman.exception.exceptions.AuthenticationFailedException;
+import com.aabhi.pasman.exception.exceptions.InvalidUserDataException;
+import com.aabhi.pasman.exception.exceptions.UserAlreadyExistsException;
 import com.aabhi.pasman.model.User;
 import com.aabhi.pasman.repository.UserRepository;
 import com.aabhi.pasman.security.jwt.JwtService;
@@ -51,7 +51,7 @@ public class AuthServiceImpl implements AuthService {
             
             User authenticatedUser = userRepository.findByEmail(loginDto.getEmail())
                     .orElseThrow(() -> new AuthenticationFailedException("User not found"));
-                    
+
             String token = jwtService.generateToken(authenticatedUser);
 
             return LoginResponseDto.builder()
@@ -68,11 +68,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoginResponseDto register(UserDto userDto) {
         // Validate input data
-        if (userDto.getUsername() == null || userDto.getEmail() == null || userDto.getPassword() == null) {
+        if (userDto.getName() == null || userDto.getEmail() == null || userDto.getPassword() == null) {
             throw new InvalidUserDataException("Username, email, and password are required");
         }
 
-        String username = userDto.getUsername();
+        String name = userDto.getName();
         String email = userDto.getEmail();
         String rawPassword = userDto.getPassword();
 
@@ -84,7 +84,7 @@ public class AuthServiceImpl implements AuthService {
 
         // Validate username format
         String usernameRegex = "^[a-zA-Z0-9]*$";
-        if (!username.matches(usernameRegex)) {
+        if (!name.matches(usernameRegex)) {
             throw new InvalidUserDataException("Username must contain only letters and numbers");
         }
         
@@ -106,7 +106,7 @@ public class AuthServiceImpl implements AuthService {
         // Create and save user
         try {
             User user = User.builder()
-                    .username(username)
+                    .name(name)
                     .password(password)
                     .email(email)
                     .encryptionSalt(encryptionSalt)

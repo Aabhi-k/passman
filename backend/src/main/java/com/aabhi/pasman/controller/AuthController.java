@@ -1,8 +1,8 @@
 package com.aabhi.pasman.controller;
 
-import com.aabhi.pasman.dto.user.LoginDto;
-import com.aabhi.pasman.dto.user.LoginResponseDto;
-import com.aabhi.pasman.dto.user.UserDto;
+import com.aabhi.pasman.dto.auth.LoginDto;
+import com.aabhi.pasman.dto.auth.LoginResponseDto;
+import com.aabhi.pasman.dto.auth.UserDto;
 import com.aabhi.pasman.service.authservice.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

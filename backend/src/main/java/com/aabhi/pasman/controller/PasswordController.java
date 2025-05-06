@@ -28,7 +28,7 @@ public class PasswordController {
     @GetMapping("/getall/{userId}")
     public ResponseEntity<List<PasswordResponseDto>> getAllPasswords(@PathVariable String userId) {
         List<PasswordResponseDto> passwords = passwordService.getAllPasswords(userId);
-        return ResponseEntity.ok(passwords.isEmpty() ? List.of() : passwords);
+        return ResponseEntity.ok(passwords);
     }
 
     @GetMapping("/get/{passwordId}")

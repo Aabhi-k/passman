@@ -2,8 +2,8 @@ package com.aabhi.pasman.service.passwordservice;
 
 import com.aabhi.pasman.dto.password.PasswordDto;
 import com.aabhi.pasman.dto.password.PasswordResponseDto;
-import com.aabhi.pasman.exception.InvalidPasswordDataException;
-import com.aabhi.pasman.exception.PasswordNotFoundException;
+import com.aabhi.pasman.exception.exceptions.InvalidPasswordDataException;
+import com.aabhi.pasman.exception.exceptions.PasswordNotFoundException;
 import com.aabhi.pasman.model.Password;
 import com.aabhi.pasman.repository.PasswordRepository;
 import com.aabhi.pasman.service.authservice.AuthService;

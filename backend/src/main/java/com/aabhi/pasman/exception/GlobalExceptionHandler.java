@@ -1,5 +1,6 @@
 package com.aabhi.pasman.exception;
 
+import com.aabhi.pasman.exception.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -56,5 +57,14 @@ public class GlobalExceptionHandler {
         body.put("message", message);
         
         return new ResponseEntity<>(body, status);
+    }
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        return createErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+    
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<Object> handleBadRequestException(BadRequestException ex) {
+        return createErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

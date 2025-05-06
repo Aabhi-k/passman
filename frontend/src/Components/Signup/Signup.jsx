@@ -8,7 +8,7 @@ import passmanLogo from '../../assets/passmanLogo.png';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
-    username: '',
+    name: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -32,7 +32,7 @@ const Signup = () => {
   const validateForm = () => {
     setLoading(false); 
     
-    if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
+    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
       setError('All fields are required');
       return false;
     }
@@ -61,15 +61,15 @@ const Signup = () => {
     setError('');
     setSuccess('');
     
+    
     if (!validateForm()) {
       return;
     }
     
     setLoading(true);
-    
     try {
       const userData = {
-        username: formData.username,
+        name: formData.name,
         email: formData.email,
         password: formData.password
       };
@@ -141,8 +141,8 @@ const Signup = () => {
             <input
               type="text"
               id="username"
-              name="username"
-              value={formData.username}
+              name="name"
+              value={formData.name}
               onChange={handleChange}
               placeholder="Choose a username"
               disabled={loading}
@@ -194,8 +194,8 @@ const Signup = () => {
           
           <button type="submit" className="signup-button" disabled={loading}>
             {loading ? (
-              <div className="loading-spinner">
-                <div className="spinner"></div>
+              <div className="signup-loading-spinner">
+                <div className="signup-spinner"></div>
                 <span>Creating account...</span>
               </div>
             ) : (

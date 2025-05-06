@@ -1,4 +1,4 @@
-package com.aabhi.pasman.dto.user;
+package com.aabhi.pasman.dto.auth;
 
 import lombok.*;
 

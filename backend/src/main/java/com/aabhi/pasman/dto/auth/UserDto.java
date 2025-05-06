@@ -1,4 +1,4 @@
-package com.aabhi.pasman.dto.user;
+package com.aabhi.pasman.dto.auth;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class UserDto {
-    private String username;
+    private String name;
     private String email;
     private String password;
 }

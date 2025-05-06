@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Setting.css';
 import passmanlogo from '../../assets/passmanLogo.png';
+import { getUserDetails, updateUserDetails, changeUserPassword } from '../api/api';
 
 const Setting = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState({
-    username: '',
+    name: '',
     email: '',
     currentPassword: '',
     newPassword: '',
@@ -47,23 +48,16 @@ const Setting = () => {
   const fetchUserData = async () => {
     setLoading(true);
     try {
-      const userId = localStorage.getItem('userId');
-      
-      setTimeout(() => {
-        const userData = {
-          username: localStorage.getItem('username') || 'User',
-          email: localStorage.getItem('email') || 'user@example.com',
-        };
-        
+      const response = await getUserDetails();
+      if (response.data) {
         setUser(prevState => ({
           ...prevState,
-          username: userData.username,
-          email: userData.email
+          name: response.data.name,
+          email: response.data.email
         }));
-        
-        setLoading(false);
-      }, 800);
+      }
       
+      setLoading(false);
     } catch (err) {
       console.error('Failed to fetch user data:', err);
       setError('Failed to load your profile information. Please try again.');
@@ -86,7 +80,7 @@ const Setting = () => {
 
   const handleUpdateProfile = async () => {
     // Validate fields
-    if (!user.username.trim()) {
+    if (!user.name.trim()) {
       setError('Username cannot be empty');
       return;
     }
@@ -99,21 +93,25 @@ const Setting = () => {
     setLoading(true);
     
     try {
-      // Replace with your API call to update user profile
-      // For demonstration, we'll simulate a successful update
-      setTimeout(() => {
-        localStorage.setItem('username', user.username);
-        localStorage.setItem('email', user.email);
+      // Call API to update user profile
+      const updateData = {
+        name: user.name,
+        email: user.email
+      };
+      
+      const response = await updateUserDetails(updateData);
+      
+      if (response.data) {
         
         setSuccess('Profile updated successfully!');
         setShowSuccessToast(true);
         setIsEditing(false);
-        setLoading(false);
-      }, 800);
+      }
       
+      setLoading(false);
     } catch (err) {
       console.error('Failed to update profile:', err);
-      setError('Failed to update your profile. Please try again.');
+      setError(err.response?.data?.message || 'Failed to update your profile. Please try again.');
       setLoading(false);
     }
   };
@@ -142,27 +140,31 @@ const Setting = () => {
     setLoading(true);
     
     try {
-      // Replace with your API call to update password
-      // For demonstration, we'll simulate a successful password update
-      setTimeout(() => {
-        setSuccess('Password changed successfully!');
-        setShowSuccessToast(true);
-        setIsChangingPassword(false);
-        
-        // Reset password fields
-        setUser(prevState => ({
-          ...prevState,
-          currentPassword: '',
-          newPassword: '',
-          confirmPassword: ''
-        }));
-        
-        setLoading(false);
-      }, 800);
+      // Call API to change password
+      const passwordData = {
+        currentPassword: user.currentPassword,
+        newPassword: user.newPassword,
+        confirmPassword: user.confirmPassword
+      };
       
+      await changeUserPassword(passwordData);
+      
+      setSuccess('Password changed successfully!');
+      setShowSuccessToast(true);
+      setIsChangingPassword(false);
+      
+      // Reset password fields
+      setUser(prevState => ({
+        ...prevState,
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      }));
+      
+      setLoading(false);
     } catch (err) {
       console.error('Failed to change password:', err);
-      setError('Failed to change your password. Please try again.');
+      setError(err.response?.data?.message || 'Failed to change your password. Please try again.');
       setLoading(false);
     }
   };
@@ -254,13 +256,13 @@ const Setting = () => {
                   {isEditing ? (
                     <input
                       type="text"
-                      name="username"
-                      value={user.username}
+                      name="name"
+                      value={user.name}
                       onChange={handleChange}
                       className="settings-input"
                     />
                   ) : (
-                    <div className="settings-value">{user.username}</div>
+                    <div className="settings-value">{user.name}</div>
                   )}
                 </div>
                 

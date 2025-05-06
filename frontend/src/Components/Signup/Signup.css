@@ -151,24 +151,24 @@
 }
 
 /* Loading spinner styles */
-.loading-spinner {
+.signup-loading-spinner {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px; /* Slightly reduced to match login page */
+  gap: 8px;
 }
 
-.spinner {
+.signup-spinner {
   border: 3px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   border-top: 3px solid #ffffff;
-  width: 16px; /* Reduced from 20px to match login */
-  height: 16px; /* Reduced from 20px to match login */
+  width: 16px;
+  height: 16px;
   animation: spin 1s linear infinite;
 }
 
-.loading-spinner span {
-  font-size: 0.95rem; /* Slightly smaller text */
+.signup-loading-spinner span {
+  font-size: 0.95rem;
   font-weight: 500;
 }
 
