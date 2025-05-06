@@ -11,6 +11,22 @@ import searchIcon from '../../assets/icons/search.svg';
 import signoutIcon from '../../assets/icons/signout.svg';
 import settingsIcon from '../../assets/icons/gear-solid.svg';
 
+
+const colorizePassword = (password) => {
+  if (!password) return '';
+  
+  return password.split('').map((char, index) => {
+    if (/[A-Za-z]/.test(char)) {
+      return `<span key=${index} class="password-char letter">${char}</span>`;
+    } else if (/[0-9]/.test(char)) {
+      return `<span key=${index} class="password-char number">${char}</span>`;
+    } else {
+      return `<span key=${index} class="password-char special">${char}</span>`;
+    }
+  }).join('');
+};
+
+
 const Dashboard = () => {
   const [selectedPassword, setSelectedPassword] = useState(null);
   const [view, setView] = useState(false);
@@ -60,7 +76,6 @@ const Dashboard = () => {
       const key = await getAESKey();
       if (response.status === 200) {
         if (!response.data || response.data.length === 0) {
-          // Handle empty password list properly
           setPasswords([]);
         } else {
           const decryptedPasswords = await Promise.all(
@@ -530,7 +545,10 @@ const Dashboard = () => {
             <div className="modal-field">
               <label>Password:</label>
               <div className="field-value field-with-copy">
-                <span className="password-dots">••••••••••</span>
+                <span 
+                  className="password-dots" 
+                  dangerouslySetInnerHTML={{ __html: '••••••••••' }}
+                ></span>
                 <button 
                   className="copy-btn"
                   onClick={() => {
@@ -542,12 +560,16 @@ const Dashboard = () => {
                 <button 
                   className="show-btn"
                   onClick={(e) => {
-                    const element = e.target.parentNode.querySelector('.password-dots');
-                    if (element.textContent === '••••••••••') {
-                      element.textContent = selectedPassword.password || '';
+                    const element = e.target.parentNode.querySelector('.password-dots, .password-display');
+                    if (e.target.textContent === 'Show') {
+                      // Replace with colorized password
+                      element.innerHTML = colorizePassword(selectedPassword.password || '');
+                      element.className = 'password-display'; // Change class for styling
                       e.target.textContent = 'Hide';
                     } else {
-                      element.textContent = '••••••••••';
+                      // Hide password
+                      element.innerHTML = '••••••••••';
+                      element.className = 'password-dots'; // Restore original class
                       e.target.textContent = 'Show';
                     }
                   }}

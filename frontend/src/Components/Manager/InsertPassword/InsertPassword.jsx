@@ -5,6 +5,20 @@ import { getAESKey } from '../../../Components/Encryption/AesKeyStore';
 import './InsertPassword.css';
 import { savePassword } from '../../api/api';
 
+const colorizePassword = (password) => {
+  if (!password) return '';
+  
+  return password.split('').map((char, index) => {
+    if (/[A-Za-z]/.test(char)) {
+      return `<span key=${index} class="password-char letter">${char}</span>`;
+    } else if (/[0-9]/.test(char)) {
+      return `<span key=${index} class="password-char number">${char}</span>`;
+    } else {
+      return `<span key=${index} class="password-char special">${char}</span>`;
+    }
+  }).join('');
+};
+
 const InsertPassword = () => {
   const [formData, setFormData] = useState({
     title: '',
@@ -80,6 +94,7 @@ const InsertPassword = () => {
     }
   };
 
+
   return (
     <div className="insert-password-container">
       <div className="form-container">
@@ -135,8 +150,14 @@ const InsertPassword = () => {
                 onChange={handleChange}
                 placeholder="Enter password"
                 required
-                className="form-input"
+                className={`form-input ${showPassword ? "colorized" : ""}`}
               />
+              {showPassword && (
+                <div 
+                  className="password-overlay" 
+                  dangerouslySetInnerHTML={{ __html: colorizePassword(formData.password) }} 
+                />
+              )}
               <div className="password-actions">
                 <button 
                   type="button" 
