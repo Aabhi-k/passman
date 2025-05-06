@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import './App.css';
+import Home from './Components/Home/Home';
 import Login from './Components/Login/Login';
 import Signup from './Components/Signup/Signup';
 import Dashboard from './Components/Dashboard/Dashboard';
@@ -32,7 +33,7 @@ function App() {
         {/* Public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Home />} />
         
         {/* Protected routes */}
         <Route
