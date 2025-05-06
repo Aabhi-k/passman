@@ -67,7 +67,7 @@ const InsertPassword = () => {
       const ed = {...encryptedData, userId:localStorage.getItem('userId')};
       const response = await savePassword(ed);
 
-      if (response.status !== 200) {
+      if (response.status !== 201) {
         throw new Error('Failed to save password. Please try again.');
       }
       navigate('/dashboard');
