@@ -5,8 +5,11 @@
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  height: 100vh;
+  min-height: 100vh;
   color: #e0e0e0;
+}
+.settings{
+  padding: 2rem 4rem;
 }
 
 .settings-header {
@@ -14,7 +17,6 @@
   justify-content: space-between;
   align-items: center;
   border-bottom: none;
-  margin-bottom: 24px;
 }
 
 .logo-container img {
@@ -60,7 +62,6 @@
 .settings-content {
   max-width: 800px;
   margin: 0 auto;
-  padding: 20px 0;
 }
 
 .settings-card {

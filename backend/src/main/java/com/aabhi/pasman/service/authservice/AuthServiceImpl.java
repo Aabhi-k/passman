@@ -87,7 +87,7 @@ public class AuthServiceImpl implements AuthService {
         if (!name.matches(usernameRegex)) {
             throw new InvalidUserDataException("Username must contain only letters and numbers");
         }
-        
+
         // Validate password length
         if (rawPassword.length() < 8) {
             throw new InvalidUserDataException("Password must be at least 8 characters long");
