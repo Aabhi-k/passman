@@ -1,6 +1,6 @@
 # Passman 🔐
 
-A secure, cross-platform password manager to store and manage your credentials with end-to-end encryption.
+A secure, cross-platform password manager to store and manage your credentials with end-to-end encryption. [Live](https://passman.letsgetthis.tech/)
 
 ---
 
@@ -21,17 +21,21 @@ A secure, cross-platform password manager to store and manage your credentials w
 
 ## 📸 Screenshots
 
+### Home Screen
+![image](https://github.com/user-attachments/assets/c2fe87b7-7325-4e66-b65d-e81bcaf58ba5)
+
+
 ### Login Screen  
-![Login Screen][loginscreen]
+![image](https://github.com/user-attachments/assets/139ff943-bf24-4d5b-a013-f1976445a433)
+
+
 
 ### Sign Up  
-![Sign Up][signupscreen]
+![image](https://github.com/user-attachments/assets/9a734046-6a89-40d3-9fde-2e3538ef128e)
+
 
 ### Dashboard / Password List  
-![Password List][passwordlist]
-
-### Add / Edit Entry  
-![Add Entry][addentryscreen]
+![image](https://github.com/user-attachments/assets/ab3462da-956a-4fcd-880e-a18dcc100bd3)
 
 ---
 
