@@ -13,4 +13,5 @@ public interface AuthService {
     boolean checkUser(String id);
     User getUserById(String id);
 
+    void changePassword(UserDto userDto);
 }

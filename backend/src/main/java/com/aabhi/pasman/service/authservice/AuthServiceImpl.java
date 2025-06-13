@@ -145,6 +145,35 @@ public class AuthServiceImpl implements AuthService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new AuthenticationFailedException("User not found"));
     }
+
+    @Override
+    public void changePassword(UserDto userDto) {
+        // Validate input data
+        if (userDto.getId() == null || userDto.getPassword() == null) {
+            throw new InvalidUserDataException("User ID and new password are required");
+        }
+
+        String userId = userDto.getId();
+        String newPassword = userDto.getPassword();
+
+        // Validate password length
+        if (newPassword.length() < 8) {
+            throw new InvalidUserDataException("Password must be at least 8 characters long");
+        }
+
+        // Find user by ID
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AuthenticationFailedException("User not found"));
+
+        // Hash the new password
+        String hashedPassword = bCryptPasswordEncoder.encode(newPassword);
+
+        // Update user's password
+        user.setPassword(hashedPassword);
+
+        // Save updated user
+        userRepository.save(user);
+    }
 }
 
 class AESKeyUtils {

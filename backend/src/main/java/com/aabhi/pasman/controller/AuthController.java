@@ -28,4 +28,10 @@ public class AuthController {
         LoginResponseDto response = authService.register(userDto);
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changePassword(@RequestBody UserDto userDto) {
+        authService.changePassword(userDto);
+        return ResponseEntity.ok("Password changed successfully");
+    }
 }
