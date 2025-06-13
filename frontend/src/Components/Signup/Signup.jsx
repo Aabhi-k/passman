@@ -57,6 +57,8 @@ const Signup = () => {
   };
 
   const handleSubmit = async (e) => {
+    localStorage.clear('token');
+    localStorage.clear('userId');
     e.preventDefault();
     setError('');
     setSuccess('');
@@ -80,7 +82,6 @@ const Signup = () => {
         throw new Error(response?.data?.message || 'Signup failed');
       }
       
-      // Save auth data to localStorage
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('userId', response.data.userId);
       
@@ -91,7 +92,6 @@ const Signup = () => {
             
       setSuccess('Account created successfully!');
       
-      // Short delay to show success message before redirecting
       setTimeout(() => {
         navigate('/dashboard');
       }, 1000);

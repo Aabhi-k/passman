@@ -199,6 +199,8 @@ const Setting = () => {
 
   return (
     <div className="settings-container">
+      <div className="settings">
+        
       {showSuccessToast && (
         <div className="success-toast">
           <div className="toast-content">
@@ -308,7 +310,7 @@ const Setting = () => {
                 )}
               </div>
 
-              <div className="settings-section password-section">
+              {/* <div className="settings-section password-section">
                 <h3>Password</h3>
                 
                 {!isChangingPassword ? (
@@ -382,7 +384,7 @@ const Setting = () => {
                     </div>
                   </>
                 )}
-              </div>
+              </div> */}
 
               <div className="settings-section account-section">
                 <h3>Account Actions</h3>
@@ -400,6 +402,8 @@ const Setting = () => {
           )}
         </div>
       </main>
+      
+      </div>
     </div>
   );
 };
